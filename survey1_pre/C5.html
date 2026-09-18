@@ -1,0 +1,37 @@
+{{ extends 'global/SurveyPage.html' }}
+
+{{ block title }}C. 노무관리와 조직 내 갈등 현황{{ endblock }}
+
+{{ block content }}
+
+<div class="q">
+    <span class="q-text">C5. 지난 3년간 귀사(현 소속)가 경험한 사항을 모두 선택해 주십시오.</span>
+    {{ formfield_errors 'c5_1' }}
+    {{ with cb=c5 }}{{ include 'global/_checkboxes.html' }}{{ endwith }}
+    <div class="sub-input" data-show-if="c5_5=y">{{ formfield 'c5_other' }}</div>
+</div>
+
+<div class="q" data-q>
+    <span class="q-text">{{ form.c6.label.text }}</span>
+    <p class="q-note">0 (전혀 우려하지 않음) ~ 100 (매우 우려함) 사이의 숫자로 적어 주십시오.</p>
+    <div class="num-0-100">{{ form.c6 }}</div>
+    {{ formfield_errors 'c6' }}
+</div>
+
+<div class="q" data-q>
+    <span class="q-text">{{ form.c7.label.text }}</span>
+    <p class="q-note">0 (전혀 없음) ~ 100 (매우 높음) 사이의 숫자로 적어 주십시오.</p>
+    <div class="num-0-100">{{ form.c7 }}</div>
+    {{ formfield_errors 'c7' }}
+</div>
+
+<div class="q">
+    <span class="q-text">C8. 귀사(현 소속)가 직장 내 괴롭힘 대응과 세대 갈등 관리 등 노무관리 체계를 정비하는 데 가장 큰 어려움은 무엇입니까? (최대 3개)</span>
+    {{ formfield_errors 'c8_1' }}
+    {{ with cb=c8 }}{{ include 'global/_checkboxes.html' }}{{ endwith }}
+    <div class="sub-input" data-show-if="c8_12=y">{{ formfield 'c8_other' }}</div>
+</div>
+
+<div class="btn-next-wrap"><button class="otree-btn-next btn btn-primary">다음</button></div>
+
+{{ endblock }}

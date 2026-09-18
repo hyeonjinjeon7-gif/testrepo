@@ -1,0 +1,14 @@
+{{ extends 'global/SurveyPage.html' }}
+
+{{ block title }}B. 유연근무/일가정양립 현황{{ endblock }}
+
+{{ block content }}
+
+<div class="q">
+    <span class="q-text">B2. 귀사(현 소속)에서 다음 제도를 운영하고 있습니까?</span>
+    {{ with mx=b2 }}{{ include 'global/_matrix.html' }}{{ endwith }}
+</div>
+
+<div class="btn-next-wrap"><button class="otree-btn-next btn btn-primary">다음</button></div>
+
+{{ endblock }}

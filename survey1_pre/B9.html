@@ -1,0 +1,21 @@
+{{ extends 'global/SurveyPage.html' }}
+
+{{ block title }}B. 유연근무/일가정양립 현황{{ endblock }}
+
+{{ block content }}
+
+<div class="q">
+    <span class="q-text">B9. 유연근무제 또는 일가정양립 제도 확대가 귀사(현 소속)에 미칠 영향에 대해 어떻게 생각하십니까?</span>
+    {{ with mx=b9 }}{{ include 'global/_matrix.html' }}{{ endwith }}
+</div>
+
+<div class="q">
+    <span class="q-text">B10. 귀사(현 소속)가 유연근무제 또는 일가정양립 제도를 도입하거나 확대하는 데 가장 큰 어려움은 무엇입니까? (최대 3개)</span>
+    {{ formfield_errors 'b10_1' }}
+    {{ with cb=b10 }}{{ include 'global/_checkboxes.html' }}{{ endwith }}
+    <div class="sub-input" data-show-if="b10_14=y">{{ formfield 'b10_other' }}</div>
+</div>
+
+<div class="btn-next-wrap"><button class="otree-btn-next btn btn-primary">다음</button></div>
+
+{{ endblock }}

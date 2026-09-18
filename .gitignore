@@ -1,0 +1,17 @@
+# 응답 데이터 (연락처 등 개인정보 포함 가능)
+db.sqlite3
+*.sqlite3
+
+# 설문 원본 문서, Office 임시 파일
+*.docx
+~$*
+
+# Python / macOS
+__pycache__/
+*.pyc
+.DS_Store
+
+# 로컬 도구 설정
+.claude/
+.idea/
+.venv/

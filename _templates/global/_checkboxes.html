@@ -1,0 +1,15 @@
+{{ comment }}
+체크박스(복수 선택) 문항 공통 틀.
+사용법: with cb=b10 로 변수를 넘기고 include 'global/_checkboxes.html'
+  cb.rows      : 체크박스 필드 이름 목록
+  cb.max       : 최대 선택 개수 (0이면 제한 없음)
+  cb.exclusive : 선택하면 나머지를 해제하는 보기(예: "없음")의 필드 이름, 없으면 ''
+{{ endcomment }}
+<div class="cb-group" data-q data-max-check="{{ cb.max }}" data-exclusive="{{ cb.exclusive }}">
+    {{ for field in form }}{{ if field.name in cb.rows }}
+    <div class="form-check cb-item">
+        {{ field }}
+        <label class="form-check-label" for="{{ field.id }}">{{ field.label.text }}</label>
+    </div>
+    {{ endif }}{{ endfor }}
+</div>

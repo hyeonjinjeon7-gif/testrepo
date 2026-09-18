@@ -1,0 +1,21 @@
+{{ extends 'global/SurveyPage.html' }}
+
+{{ block title }}B. 유연근무/일가정양립 현황{{ endblock }}
+
+{{ block content }}
+
+{{ if show_b3 }}
+<div class="q">
+    <span class="q-text">B3. 지난 12개월 동안 다음 제도를 실제로 사용한 직원이 있었습니까?</span>
+    {{ with mx=b3 }}{{ include 'global/_matrix.html' }}{{ endwith }}
+</div>
+{{ endif }}
+
+<div class="q">
+    <span class="q-text">B15. 유연근무제에 대한 다음 생각에 얼마나 동의하십니까?</span>
+    {{ with mx=b15 }}{{ include 'global/_matrix.html' }}{{ endwith }}
+</div>
+
+<div class="btn-next-wrap"><button class="otree-btn-next btn btn-primary">다음</button></div>
+
+{{ endblock }}

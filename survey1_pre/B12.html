@@ -1,0 +1,30 @@
+{{ extends 'global/SurveyPage.html' }}
+
+{{ block title }}B. 유연근무/일가정양립 현황{{ endblock }}
+
+{{ block content }}
+
+<div class="q" data-q>
+    <span class="q-text">{{ form.b12.label.text }}</span>
+    <p class="q-note">0 (전혀 없음) ~ 100 (매우 높음) 사이의 숫자로 적어 주십시오.</p>
+    <div class="num-0-100">{{ form.b12 }}</div>
+    {{ formfield_errors 'b12' }}
+</div>
+
+<p class="q-text">B13. 지난 1년간 정부나 지자체로부터 일과 생활 균형 관련 제도 안내를 받거나 교육, 컨설팅에 참여한 적이 있습니까?</p>
+
+<div class="q" data-q>{{ formfield 'b13_1' }}</div>
+
+<div class="q" data-q>
+    {{ formfield 'b13_2' }}
+    <div class="sub-input" data-show-if="b13_2=1">{{ formfield 'b13_2_text' }}</div>
+</div>
+
+<div class="q" data-q data-q-optional>
+    {{ formfield 'b14' }}
+    <p class="q-note">예: 주 4일제, 가족 기념일 휴가, 가족여행비 지원 등</p>
+</div>
+
+<div class="btn-next-wrap"><button class="otree-btn-next btn btn-primary">다음</button></div>
+
+{{ endblock }}

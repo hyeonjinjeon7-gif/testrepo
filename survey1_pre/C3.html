@@ -1,0 +1,19 @@
+{{ extends 'global/SurveyPage.html' }}
+
+{{ block title }}C. 노무관리와 조직 내 갈등 현황{{ endblock }}
+
+{{ block content }}
+
+<div class="q">
+    <span class="q-text">C3. 귀사(현 소속)에서 다음 사안을 둘러싸고 젊은 직원(20-30대)과 관리자(또는 선배 직원) 사이에 갈등이나 마찰이 어느 정도 있습니까?</span>
+    {{ with mx=c3 }}{{ include 'global/_matrix.html' }}{{ endwith }}
+</div>
+
+<div class="q">
+    <span class="q-text">C4. 노무관리에 대한 다음 생각에 얼마나 동의하십니까?</span>
+    {{ with mx=c4 }}{{ include 'global/_matrix.html' }}{{ endwith }}
+</div>
+
+<div class="btn-next-wrap"><button class="otree-btn-next btn btn-primary">다음</button></div>
+
+{{ endblock }}

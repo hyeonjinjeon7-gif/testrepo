@@ -1,0 +1,14 @@
+{{ extends 'otree/Page.html' }}
+{{ comment }}
+모든 설문 앱(설문 1-4)이 공통으로 쓰는 페이지 틀.
+각 페이지 HTML 첫 줄에서 extends 로 global/SurveyPage.html 을 불러오고
+title / content 블록만 채우면 된다.
+{{ endcomment }}
+
+{{ block global_styles }}
+<link rel="stylesheet" href="{{ static 'survey/survey.css' }}">
+{{ endblock }}
+
+{{ block global_scripts }}
+<script src="{{ static 'survey/survey.js' }}"></script>
+{{ endblock }}

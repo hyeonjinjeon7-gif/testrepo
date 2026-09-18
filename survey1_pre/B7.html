@@ -1,0 +1,23 @@
+{{ extends 'global/SurveyPage.html' }}
+
+{{ block title }}B. 유연근무/일가정양립 현황{{ endblock }}
+
+{{ block content }}
+
+<div class="q">
+    <span class="q-text">B7. 다음 정부 지원제도를 어느 정도 알고 계십니까?</span>
+    {{ with mx=b7 }}{{ include 'global/_matrix.html' }}{{ endwith }}
+</div>
+
+<div class="q" data-q data-show-if-any="b7_:1,2,3">
+    <span class="q-text">B8. 이러한 지원제도를 주로 어떤 경로로 접하십니까?</span>
+    <div class="inline-num">
+        <div>{{ formfield 'b8_rank1' }}</div>
+        <div>{{ formfield 'b8_rank2' }}</div>
+    </div>
+    <div class="sub-input" data-show-if="b8_rank1|b8_rank2=8">{{ formfield 'b8_other' label='기타 (직접 입력)' }}</div>
+</div>
+
+<div class="btn-next-wrap"><button class="otree-btn-next btn btn-primary">다음</button></div>
+
+{{ endblock }}

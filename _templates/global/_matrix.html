@@ -1,0 +1,31 @@
+{{ comment }}
+표(matrix) 문항 공통 틀.
+사용법: with mx=b1 로 변수를 넘기고 include 'global/_matrix.html'
+  mx.rows  : 이 표에 들어갈 필드 이름 목록 (행 순서 = 필드 정의 순서)
+  mx.scale : 열 머리글(보기) 목록
+행 문구는 __init__.py 필드의 label 을 사용한다.
+휴대폰 화면에서는 행마다 카드 형태로 바뀐다 (survey.css).
+{{ endcomment }}
+<table class="mx">
+    <thead>
+    <tr>
+        <th class="mx-item"></th>
+        {{ for s in mx.scale }}<th class="mx-col">{{ s }}</th>{{ endfor }}
+    </tr>
+    </thead>
+    <tbody>
+    {{ for field in form }}{{ if field.name in mx.rows }}
+    <tr class="mx-row{{ if field.errors }} has-errors{{ endif }}" data-q>
+        <td class="mx-item">
+            {{ field.label.text }}
+            {{ if field.errors }}<div class="form-control-errors">{{ for e in field.errors }}{{ e }} {{ endfor }}</div>{{ endif }}
+        </td>
+        {{ for choice in field }}
+        <td class="mx-cell">
+            <label class="mx-opt">{{ choice }}<span class="mx-opt-text">{{ choice.label.text }}</span></label>
+        </td>
+        {{ endfor }}
+    </tr>
+    {{ endif }}{{ endfor }}
+    </tbody>
+</table>

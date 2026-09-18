@@ -1,0 +1,25 @@
+{{ extends 'global/SurveyPage.html' }}
+
+{{ block title }}A. 기업 기본정보{{ endblock }}
+
+{{ block content }}
+
+<div class="q" data-q>
+    <span class="q-text">A0. 귀사(현 소속)의 회사명을 입력해 주십시오.</span>
+    <p class="q-note">설문 연결 목적으로만 사용되며 외부에 공개되지 않습니다.</p>
+    {{ formfield 'a0' }}
+</div>
+
+{{ if player.consent_privacy == 1 }}
+<div class="q" data-q>
+    <span class="q-text">A0-1. 귀하의 연락처를 남겨 주십시오.</span>
+    <p class="q-note">설문 연결과 연구 관련 안내에만 사용되며 외부에 공개되지 않습니다.</p>
+    {{ formfield 'a0_1_name' }}
+    {{ formfield 'a0_1_phone' }}
+    {{ formfield 'a0_1_email' }}
+</div>
+{{ endif }}
+
+<div class="btn-next-wrap"><button class="otree-btn-next btn btn-primary">다음</button></div>
+
+{{ endblock }}
