@@ -7,6 +7,9 @@
 <div class="notice">
     마지막으로 귀하의 직장 생활과 앞으로의 계획에 대해 여쭙습니다.
     이 부분의 응답은 <b>회사에 전달되지 않으며</b> 전체 집계로만 분석됩니다.
+    {{ if sensitive }}
+    <b>가족 계획에 관한 문항(N3 이하)은 건너뛰셔도 됩니다.</b>
+    {{ endif }}
 </div>
 
 <div class="q" data-q>{{ formfield 'n1' }}</div>
@@ -17,7 +20,8 @@
 </div>
 
 {{ if sensitive }}
-<div class="q" data-q>
+{{ comment }}민감정보 문항은 동의서에서 "모두 건너뛸 수 있다"고 안내하므로 선택으로 둔다{{ endcomment }}
+<div class="q" data-q data-q-optional>
     {{ formfield 'n3' }}
     <p class="q-note">자녀가 있는 분은 자녀를 더 가질 계획을 기준으로 답해 주십시오.</p>
 
