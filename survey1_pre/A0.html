@@ -15,7 +15,7 @@
     <span class="q-text">A0-1. 귀하의 연락처를 남겨 주십시오.</span>
     <p class="q-note">설문 연결과 연구 관련 안내에만 사용되며 외부에 공개되지 않습니다.</p>
     {{ formfield 'a0_1_name' }}
-    {{ formfield 'a0_1_phone' }}
+    <div data-digits>{{ formfield 'a0_1_phone' }}</div>
     {{ formfield 'a0_1_email' }}
 </div>
 {{ endif }}

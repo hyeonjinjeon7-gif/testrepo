@@ -14,6 +14,7 @@
  *   data-max-check="3"         (체크박스 묶음) 최대 선택 개수
  *   data-exclusive="c5_6"      (체크박스 묶음) 이 보기를 고르면 나머지 해제
  *   data-sum="a5_m_"           이름이 a5_m_ 로 시작하는 숫자 입력칸의 합계를 표시
+ *   data-digits                안의 입력칸에 숫자와 '-' 만 입력되게 한다 (휴대전화, 사업자번호 등)
  *
  * 숨겨지는 문항의 입력값은 지워지고, 서버(__init__.py)에서도 한 번 더 지운다.
  */
@@ -131,6 +132,31 @@ var OTREE_DEFAULT_BANNER = '입력 양식의 내용이 잘못되었습니다. �
         }
     }
 
+    /* ---------- 숫자와 '-' 만 입력 (휴대전화, 사업자번호 등) ---------- */
+    function setupDigitsOnly() {
+        form.querySelectorAll('[data-digits] input').forEach(function (input) {
+            input.setAttribute('inputmode', 'numeric');  // 휴대폰에서 숫자 자판이 먼저 열린다
+
+            function strip() {
+                var cleaned = input.value.replace(/[^0-9-]/g, '');
+                if (cleaned === input.value) return;
+                var pos = input.selectionStart - (input.value.length - cleaned.length);
+                input.value = cleaned;
+                try {
+                    input.setSelectionRange(pos, pos);
+                } catch (e) { /* 일부 브라우저는 지원하지 않는다 */ }
+            }
+
+            input.addEventListener('input', function (e) {
+                // 한글 조합 중에는 건드리지 않고, 조합이 끝나면 지운다
+                if (e.isComposing) return;
+                strip();
+            });
+            input.addEventListener('compositionend', strip);
+            input.addEventListener('blur', strip);
+        });
+    }
+
     /* ---------- 합계 표시 ---------- */
     function updateSums() {
         form.querySelectorAll('[data-sum]').forEach(function (out) {
@@ -245,6 +271,7 @@ var OTREE_DEFAULT_BANNER = '입력 양식의 내용이 잘못되었습니다. �
     });
     form.addEventListener('input', updateSums);
 
+    setupDigitsOnly();
     updateConditions();
     updateSums();
 })();
