@@ -8,7 +8,7 @@
     마지막으로 귀하의 직장 생활과 앞으로의 계획에 대해 여쭙습니다.
     이 부분의 응답은 <b>회사에 전달되지 않으며</b> 전체 집계로만 분석됩니다.
     {{ if sensitive }}
-    <b>가족 계획에 관한 문항(N3 이하)은 건너뛰셔도 됩니다.</b>
+    가족 계획에 관한 문항은 답하고 싶지 않으시면 <b>"응답을 원하지 않음"</b>을 선택해 주십시오.
     {{ endif }}
 </div>
 
@@ -20,19 +20,23 @@
 </div>
 
 {{ if sensitive }}
-{{ comment }}민감정보 문항은 동의서에서 "모두 건너뛸 수 있다"고 안내하므로 선택으로 둔다{{ endcomment }}
-<div class="q" data-q data-q-optional>
+<div class="q" data-q>
     {{ formfield 'n3' }}
     <p class="q-note">자녀가 있는 분은 자녀를 더 가질 계획을 기준으로 답해 주십시오.</p>
 
-    <div class="sub-input" data-show-if="n3=1,2,3">
+    <div class="sub-input" data-q data-show-if="n3=1,2,3">
         <span>N4. 앞으로 3년 이내에 자녀를 가질(또는 더 가질) 가능성 (0 전혀 없음 ~ 100 매우 높음)</span>
-        <div class="num-0-100">{{ form.n4 }}</div>
+        <div class="num-0-100" data-show-if-blank="n4_refuse">{{ form.n4 }}</div>
         {{ formfield_errors 'n4' }}
+        <div class="form-check">
+            {{ form.n4_refuse }}
+            <label class="form-check-label" for="{{ form.n4_refuse.id }}">응답을 원하지 않음</label>
+        </div>
     </div>
 
     <div data-show-if="n3=4">
         <p class="q-text">N5. "해당 없음"을 선택하신 이유는 무엇입니까? (해당하는 것 모두)</p>
+        {{ formfield_errors 'n5_1' }}
         {{ with cb=n5 }}{{ include 'global/_checkboxes.html' }}{{ endwith }}
         <div class="sub-input" data-q data-show-if="n5_5=y">{{ formfield 'n5_other' }}</div>
     </div>

@@ -93,6 +93,9 @@ class PlayerBot(Bot):
             yield from l_block()
 
         if parent:
+            yield SubmissionMustFail(
+                N, dict({f: 3 for f in N2_FIELDS}, n1=4, n3=4, n5_1=True, n5_6=True)
+            )  # "응답을 원하지 않음" + 다른 항목
             yield N, dict({f: 3 for f in N2_FIELDS}, n1=4, n3=4, n4=50, n5_2=True)
             expect(self.player.field_maybe_none('n4'), None)  # n3 = 해당 없음이면 n4는 지워짐
             expect(self.player.n5_2, True)

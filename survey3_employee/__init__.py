@@ -65,6 +65,8 @@ class C(BaseConstants):
 
     ATTN_CORRECT = 4  # M5 attention check 정답 "다소 동의"
 
+    PREFER_NOT = 9  # 민감 문항의 "응답을 원하지 않음" 보기
+
 
 class Subsession(BaseSubsession):
     pass
@@ -273,14 +275,17 @@ class Player(BasePlayer):
             [2, '갖고 싶지만 아직 결정하지 못했다'],
             [3, '계획이 없다'],
             [4, '해당 없음'],
+            [C.PREFER_NOT, '응답을 원하지 않음'],
         ],
     )
     n4 = number('N4. 앞으로 3년 이내에 자녀를 가질(또는 더 가질) 가능성', max=100)  # 민감정보
+    n4_refuse = check('응답을 원하지 않음')
     n5_1 = check('결혼(또는 동거) 계획이 없어서')  # 민감정보
     n5_2 = check('자녀 계획을 이미 마쳤거나 더 가질 생각이 없어서')
     n5_3 = check('나이 또는 건강상 이유로')
     n5_4 = check('본인 또는 배우자가 현재 임신 중이어서')
     n5_5 = check('기타')
+    n5_6 = check('응답을 원하지 않음')
     n5_other = text('기타 (직접 입력)')
 
     # ----------------------------------------------------------------- O. 연락처
@@ -306,8 +311,8 @@ M1_FIELDS = field_names('m1_', 4)
 M5_FIELDS = ['m5_1', 'm5_2', 'm5_3', 'm5_4', 'm5_5', 'm5_attn', 'm5_6']
 M6_FIELDS = field_names('m6_', 4)
 N2_FIELDS = field_names('n2_', 3)
-N5_FIELDS = field_names('n5_', 5)
-SENSITIVE_FIELDS = ['k5', 'n3', 'n4'] + N5_FIELDS + ['n5_other']
+N5_FIELDS = field_names('n5_', 6)  # 6번은 "응답을 원하지 않음"
+SENSITIVE_FIELDS = ['k5', 'n3', 'n4', 'n4_refuse'] + N5_FIELDS + ['n5_other']
 
 
 def sensitive_ok(player: Player):
@@ -514,34 +519,38 @@ class N(SurveyPage):
     form_model = 'player'
 
     @staticmethod
-    def error_message(player: Player, values):
-        return other_text_errors(values, [('n5_5', 'n5_other')])
-
-    @staticmethod
     def get_form_fields(player: Player):
         fields = ['n1'] + N2_FIELDS
         if sensitive_ok(player):
-            fields += ['n3', 'n4'] + N5_FIELDS + ['n5_other']
+            fields += ['n3', 'n4', 'n4_refuse'] + N5_FIELDS + ['n5_other']
         return fields
 
     @staticmethod
     def vars_for_template(player: Player):
         return dict(
             n2=matrix(N2_FIELDS, AGREE5),
-            n5=checkboxes(N5_FIELDS),
+            n5=checkboxes(N5_FIELDS, exclusive='n5_6'),
             sensitive=sensitive_ok(player),
         )
+
+    @staticmethod
+    def error_message(player: Player, values):
+        errors = other_text_errors(values, [('n5_5', 'n5_other')])
+        if values.get('n5_6') and count_checked(values, N5_FIELDS[:-1]) > 0:
+            errors['n5_1'] = '"응답을 원하지 않음"은 다른 항목과 함께 선택할 수 없습니다.'
+        return errors
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
         if not sensitive_ok(player):
             return
         n3 = player.field_maybe_none('n3')
-        if n3 == 4:
-            player.n4 = None
-        else:
+        # N4는 N3에서 ①-③을 고른 경우에만, N5는 "해당 없음"을 고른 경우에만 묻는다
+        if n3 != 4:
             clear_checkboxes(player, N5_FIELDS)
             player.n5_other = None
+        if n3 not in (1, 2, 3) or player.field_maybe_none('n4_refuse'):
+            player.n4 = None
         if not player.field_maybe_none('n5_5'):
             player.n5_other = None
 
