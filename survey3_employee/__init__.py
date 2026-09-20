@@ -580,7 +580,9 @@ class End(SurveyPage):
     @staticmethod
     def vars_for_template(player: Player):
         player.finished = True
-        return {}
+        # 상품권 안내는 휴대전화 번호를 실제로 남긴 분에게만 보여준다
+        # (O2에서 동의를 철회하면 번호가 지워진다)
+        return dict(has_phone=bool(player.field_maybe_none('o1')))
 
 
 L_PAGES = [L1, L4]
