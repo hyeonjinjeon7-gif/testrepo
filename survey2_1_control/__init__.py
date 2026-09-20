@@ -284,7 +284,7 @@ class Consent(SurveyPage):
     @staticmethod
     def error_message(player: Player, values):
         if not values['consent_participate']:
-            return dict(consent_participate='설문 참여에 동의하셔야 설문을 진행할 수 있습니다.')
+            return dict(consent_participate='설문 참여에 동의하셔야 다음으로 넘어갈 수 있습니다. 위 항목에 체크해 주십시오.')
 
 class A0(SurveyPage):
     form_model = 'player'

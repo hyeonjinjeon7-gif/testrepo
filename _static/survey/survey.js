@@ -4,6 +4,7 @@
  * HTML에서 쓰는 속성:
  *   data-q                     응답 확인 대상 문항 단위 (표의 한 행, 문항 하나)
  *   data-q-optional            응답 확인에서 제외 (선택 문항)
+ *   data-must-check="메시지"    안의 체크박스를 체크해야만 다음으로 넘어갈 수 있다 (동의 문항)
  *   data-show-if="a1=5"        a1 값이 5일 때만 표시 (쉼표로 여러 값: "b4=1,2,3",
  *                              | 로 여러 문항: "b8_rank1|b8_rank2=8",
  *                              ; 로 조건 여러 개 중 하나라도 맞으면: "h1=1,2;h1_1=1")
@@ -159,8 +160,47 @@
         return true;
     }
 
+    /* ---------- 반드시 체크해야 하는 동의 문항 ---------- */
+    function requiredCheckMissing() {
+        var blocked = null;
+        form.querySelectorAll('[data-must-check]').forEach(function (unit) {
+            if (blocked) return;
+            var box = unit.querySelector('input[type=checkbox]');
+            if (box && !box.checked) blocked = unit;
+        });
+        return blocked;
+    }
+
+    function showMustCheck(unit) {
+        unit.classList.add('must-check-error');
+        var msg = unit.querySelector('.must-check-msg');
+        if (!msg) {
+            msg = document.createElement('div');
+            msg.className = 'form-control-errors must-check-msg';
+            unit.appendChild(msg);
+        }
+        msg.textContent = unit.getAttribute('data-must-check');
+        unit.scrollIntoView({behavior: 'smooth', block: 'center'});
+    }
+
+    form.addEventListener('change', function (e) {
+        var unit = e.target.closest && e.target.closest('[data-must-check]');
+        if (unit && e.target.checked) {
+            unit.classList.remove('must-check-error');
+            var msg = unit.querySelector('.must-check-msg');
+            if (msg) msg.remove();
+        }
+    });
+
     var confirmed = false;
     form.addEventListener('submit', function (e) {
+        var blocked = requiredCheckMissing();
+        if (blocked) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            showMustCheck(blocked);
+            return;
+        }
         if (confirmed) return;
         form.querySelectorAll('.unanswered').forEach(function (el) {
             el.classList.remove('unanswered');

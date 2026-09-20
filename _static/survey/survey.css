@@ -270,3 +270,16 @@
     background-color: var(--survey-green);
     border-color: var(--survey-green);
 }
+
+/* 반드시 체크해야 하는 동의 문항 */
+.must-check-error {
+    background: #fdecea;
+    border: 1px solid #dc3545;
+    border-radius: 6px;
+    padding: 10px 12px;
+}
+
+.must-check-msg {
+    margin-top: 6px;
+    font-weight: 600;
+}
