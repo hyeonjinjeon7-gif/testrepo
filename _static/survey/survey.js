@@ -179,17 +179,21 @@ var UNANSWERED_BANNER = '아직 응답하지 않은 문항이 N개 있습니다.
     }
 
     /* ---------- 필수 응답 확인 (Qualtrics의 Force Response) ---------- */
+    function visibleInputs(unit, selector) {
+        // 조건에 따라 숨겨진 입력칸은 응답 확인에서 빼야 한다
+        var found = [];
+        unit.querySelectorAll(selector).forEach(function (el) {
+            if (isVisible(el)) found.push(el);
+        });
+        return found;
+    }
+
     function isAnswered(unit) {
-        var radios = unit.querySelectorAll('input[type=radio]');
-        if (radios.length) {
-            var anyChecked = Array.prototype.some.call(radios, function (r) { return r.checked; });
-            if (!anyChecked) return false;
-        }
-        var boxes = unit.querySelectorAll('input[type=checkbox]');
-        if (boxes.length) {
-            var anyBox = Array.prototype.some.call(boxes, function (b) { return b.checked; });
-            if (!anyBox) return false;
-        }
+        var radios = visibleInputs(unit, 'input[type=radio]');
+        if (radios.length && !radios.some(function (r) { return r.checked; })) return false;
+
+        var boxes = visibleInputs(unit, 'input[type=checkbox]');
+        if (boxes.length && !boxes.some(function (b) { return b.checked; })) return false;
         var texts = [];
         unit.querySelectorAll(
             'input[type=text], input[type=number], input[type=email], input[type=tel], select, textarea'
