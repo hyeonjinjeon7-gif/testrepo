@@ -5,6 +5,7 @@
  *   data-q                     필수 응답 문항 단위 (표의 한 행, 문항 하나).
  *                              응답하지 않으면 다음 페이지로 넘어갈 수 없다
  *   data-q-optional            건너뛸 수 있는 문항 (설문지에서 '선택' 또는 '건너뛰어도 됨'으로 정한 문항)
+ *   data-q-any                 입력칸이 여러 개라도 하나만 채우면 되는 문항 (예: 휴대전화 또는 이메일)
  *   data-must-check="메시지"    안의 체크박스를 체크해야만 다음으로 넘어갈 수 있다 (동의 문항)
  *   data-show-if="a1=5"        a1 값이 5일 때만 표시 (쉼표로 여러 값: "b4=1,2,3",
  *                              | 로 여러 문항: "b8_rank1|b8_rank2=8",
@@ -188,15 +189,20 @@ var UNANSWERED_BANNER = '아직 응답하지 않은 문항이 N개 있습니다.
             var anyBox = Array.prototype.some.call(boxes, function (b) { return b.checked; });
             if (!anyBox) return false;
         }
-        var texts = unit.querySelectorAll(
+        var texts = [];
+        unit.querySelectorAll(
             'input[type=text], input[type=number], input[type=email], input[type=tel], select, textarea'
-        );
-        for (var i = 0; i < texts.length; i++) {
-            var t = texts[i];
-            if (!isVisible(t) || t.closest('[data-q-optional]')) continue;
-            if (t.value.trim() === '') return false;
+        ).forEach(function (t) {
+            if (isVisible(t) && !t.closest('[data-q-optional]')) texts.push(t);
+        });
+        if (texts.length === 0) return true;
+
+        var filled = texts.filter(function (t) { return t.value.trim() !== ''; });
+        if (unit.hasAttribute('data-q-any')) {
+            // 입력칸 중 하나만 채우면 된다
+            return filled.length > 0;
         }
-        return true;
+        return filled.length === texts.length;
     }
 
     /* ---------- 화면 맨 위 안내 띠 ---------- */

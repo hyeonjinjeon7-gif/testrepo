@@ -6,19 +6,19 @@ DEBUG = True
 SESSION_CONFIGS = [
     dict(
         name='survey1_pre',
-        display_name='설문 1. 사전설문 (대표/인사관리자)',
+        display_name='설문 1. 사전설문',
         app_sequence=['survey1_pre'],
         num_demo_participants=4,
     ),
     dict(
         name='survey2_1_control',
-        display_name='설문 2-1. 사후설문 --- control (노무관리 강연, 파란 목줄)',
+        display_name='설문 2-1. 사후설문 (control)',
         app_sequence=['survey2_1_control'],
         num_demo_participants=4,
     ),
     dict(
         name='survey2_2_treatment',
-        display_name='설문 2-2. 사후설문 --- treatment (유연근무 강연, 빨간 목줄)',
+        display_name='설문 2-2. 사후설문 (treatment)',
         app_sequence=['survey2_2_treatment'],
         num_demo_participants=4,
     ),
