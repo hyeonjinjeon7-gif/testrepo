@@ -4,7 +4,8 @@
  * HTML에서 쓰는 속성:
  *   data-q                     필수 응답 문항 단위 (표의 한 행, 문항 하나).
  *                              응답하지 않으면 다음 페이지로 넘어갈 수 없다
- *   data-q-optional            건너뛸 수 있는 문항 (설문지에서 '선택' 또는 '건너뛰어도 됨'으로 정한 문항)
+ *   data-q-optional            건너뛸 수 있는 문항 (설문지에서 '선택' 또는 '건너뛰어도 됨'으로 정한 문항).
+ *                              문항 묶음을 감싸는 곳에 붙이면 그 안의 문항이 모두 선택이 된다
  *   data-q-any                 입력칸이 여러 개라도 하나만 채우면 되는 문항 (예: 휴대전화 또는 이메일)
  *   data-must-check="메시지"    안의 체크박스를 체크해야만 다음으로 넘어갈 수 있다 (동의 문항)
  *   data-show-if="a1=5"        a1 값이 5일 때만 표시 (쉼표로 여러 값: "b4=1,2,3",
@@ -268,7 +269,7 @@ var UNANSWERED_BANNER = '아직 응답하지 않은 문항이 N개 있습니다.
 
         var missing = [];
         form.querySelectorAll('[data-q]').forEach(function (unit) {
-            if (!isVisible(unit) || unit.hasAttribute('data-q-optional')) return;
+            if (!isVisible(unit) || unit.closest('[data-q-optional]')) return;
             if (!isAnswered(unit)) missing.push(unit);
         });
         if (missing.length === 0) return;
