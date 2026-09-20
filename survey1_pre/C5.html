@@ -8,7 +8,7 @@
     <span class="q-text">C5. 지난 3년간 귀사(현 소속)가 경험한 사항을 모두 선택해 주십시오.</span>
     {{ formfield_errors 'c5_1' }}
     {{ with cb=c5 }}{{ include 'global/_checkboxes.html' }}{{ endwith }}
-    <div class="sub-input" data-show-if="c5_5=y">{{ formfield 'c5_other' }}</div>
+    <div class="sub-input" data-q data-show-if="c5_5=y">{{ formfield 'c5_other' }}</div>
 </div>
 
 <div class="q" data-q>
@@ -29,7 +29,7 @@
     <span class="q-text">C8. 귀사(현 소속)가 직장 내 괴롭힘 대응과 세대 갈등 관리 등 노무관리 체계를 정비하는 데 가장 큰 어려움은 무엇입니까? (최대 3개)</span>
     {{ formfield_errors 'c8_1' }}
     {{ with cb=c8 }}{{ include 'global/_checkboxes.html' }}{{ endwith }}
-    <div class="sub-input" data-show-if="c8_12=y">{{ formfield 'c8_other' }}</div>
+    <div class="sub-input" data-q data-show-if="c8_12=y">{{ formfield 'c8_other' }}</div>
 </div>
 
 <div class="btn-next-wrap"><button class="otree-btn-next btn btn-primary">다음</button></div>

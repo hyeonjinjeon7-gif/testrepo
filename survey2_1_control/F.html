@@ -8,14 +8,14 @@
     <span class="q-text">F1. 오늘 강연 이후에도 직장 내 괴롭힘 대응과 세대 갈등 관리에서 가장 큰 어려움으로 남아 있는 것은 무엇입니까? (최대 3개)</span>
     {{ formfield_errors 'f1g2_1' }}
     {{ with cb=f1 }}{{ include 'global/_checkboxes.html' }}{{ endwith }}
-    <div class="sub-input" data-show-if="f1g2_12=y">{{ formfield 'f1g2_other' }}</div>
+    <div class="sub-input" data-q data-show-if="f1g2_12=y">{{ formfield 'f1g2_other' }}</div>
 </div>
 
 <div class="q">
     <span class="q-text">F2. 직장 내 괴롭힘 대응과 세대 갈등 관리를 위해 어떤 지원이 가장 필요하다고 생각하십니까? (최대 3개)</span>
     {{ formfield_errors 'f2g2_1' }}
     {{ with cb=f2 }}{{ include 'global/_checkboxes.html' }}{{ endwith }}
-    <div class="sub-input" data-show-if="f2g2_9=y">{{ formfield 'f2g2_other' }}</div>
+    <div class="sub-input" data-q data-show-if="f2g2_9=y">{{ formfield 'f2g2_other' }}</div>
 </div>
 
 <div class="btn-next-wrap"><button class="otree-btn-next btn btn-primary">다음</button></div>

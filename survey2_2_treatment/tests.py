@@ -35,6 +35,7 @@ class PlayerBot(Bot):
 
         yield SubmissionMustFail(F, {f: True for f in F1_FIELDS[:4]})  # 최대 3개
         yield SubmissionMustFail(F, dict(f2g1_1=True, f2g1_10=True))  # "필요 없음" + 다른 항목
+        yield SubmissionMustFail(F, dict(f1g1_14=True))  # "기타"만 고르고 내용 비움
         yield F, dict(f1g1_1=True, f1g1_14=True, f1g1_other="기타 사유", f2g1_10=True)
         expect(self.player.f1g1_other, '기타 사유')
         expect(self.player.field_maybe_none('f2g1_other'), None)

@@ -15,7 +15,7 @@
     <span class="q-text">L3. 사용하지 않은 가장 큰 이유는 무엇입니까? (최대 2개)</span>
     {{ formfield_errors 'l3_1' }}
     {{ with cb=l3 }}{{ include 'global/_checkboxes.html' }}{{ endwith }}
-    <div class="sub-input" data-show-if="l3_10=y">{{ formfield 'l3_other' }}</div>
+    <div class="sub-input" data-q data-show-if="l3_10=y">{{ formfield 'l3_other' }}</div>
 </div>
 
 <div class="btn-next-wrap"><button class="otree-btn-next btn btn-primary">다음</button></div>

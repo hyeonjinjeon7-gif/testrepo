@@ -2,6 +2,8 @@ import random
 
 from otree.api import *
 
+from survey_common import other_text_errors
+
 
 doc = """
 설문 1. 사전설문 (대표/인사관리자 --- 행사 당일, 강연 전)
@@ -676,8 +678,10 @@ class B9(SurveyPage):
 
     @staticmethod
     def error_message(player: Player, values):
+        errors = other_text_errors(values, [('b10_14', 'b10_other')])
         if count_checked(values, B10_FIELDS) > 3:
-            return dict(b10_1='최대 3개까지 선택해 주십시오.')
+            errors['b10_1'] = '최대 3개까지 선택해 주십시오.'
+        return errors
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
@@ -756,7 +760,7 @@ class C5(SurveyPage):
 
     @staticmethod
     def error_message(player: Player, values):
-        errors = {}
+        errors = other_text_errors(values, [('c5_5', 'c5_other'), ('c8_12', 'c8_other')])
         if values.get('c5_6') and count_checked(values, C5_FIELDS[:-1]) > 0:
             errors['c5_1'] = '"없음"은 다른 항목과 함께 선택할 수 없습니다.'
         if count_checked(values, C8_FIELDS) > 3:

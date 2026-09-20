@@ -218,3 +218,14 @@ def phone_email_errors(values, phone_field=None, email_field=None):
     if email_field and values.get(email_field) and not is_valid_email(values[email_field]):
         errors[email_field] = '이메일 주소를 확인해 주십시오.'
     return errors
+
+
+def other_text_errors(values, pairs):
+    """'기타'를 골랐는데 내용을 적지 않았으면 오류를 돌려준다.
+    pairs: [(기타 보기 필드, 직접 입력 필드), ...]
+    """
+    errors = {}
+    for check_field, other_field in pairs:
+        if values.get(check_field) and not (values.get(other_field) or '').strip():
+            errors[other_field] = '"기타"를 선택하셨습니다. 내용을 적어 주십시오.'
+    return errors

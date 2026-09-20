@@ -70,6 +70,7 @@ class PlayerBot(Bot):
             b9['b9_attn'] = C.ATTN_CORRECT if case == 'full' else 5
             too_many = {f: True for f in B10_FIELDS[:4]}
             yield SubmissionMustFail(B_page('B9'), dict(b9, **too_many))
+            yield SubmissionMustFail(B_page('B9'), dict(b9, b10_14=True))  # "기타"만 고르고 내용 비움
             yield B_page('B9'), dict(b9, b10_1=True, b10_14=True, b10_other='기타사유')
             expect(self.player.attn_fail_pre, case != 'full')
 

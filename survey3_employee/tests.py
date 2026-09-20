@@ -57,6 +57,7 @@ class PlayerBot(Bot):
             yield SubmissionMustFail(
                 L_page('L1'), dict(l1, l2=2, **{f: True for f in L3_FIELDS[:3]})
             )  # 최대 2개
+            yield SubmissionMustFail(L_page('L1'), dict(l1, l2=2, l3_10=True))  # "기타"만 고르고 내용 비움
             yield L_page('L1'), dict(l1, l2=2, l3_4=True, l3_10=True, l3_other='기타 이유')
             expect(self.player.l3_other, '기타 이유')
 

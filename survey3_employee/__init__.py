@@ -438,8 +438,10 @@ class L1(SurveyPage):
 
     @staticmethod
     def error_message(player: Player, values):
+        errors = other_text_errors(values, [('l3_10', 'l3_other')])
         if values.get('l2') == 2 and count_checked(values, L3_FIELDS) > 2:
-            return dict(l3_1='최대 2개까지 선택해 주십시오.')
+            errors['l3_1'] = '최대 2개까지 선택해 주십시오.'
+        return errors
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
@@ -510,6 +512,10 @@ class M5(SurveyPage):
 # ----------------------------- N, O -----------------------------
 class N(SurveyPage):
     form_model = 'player'
+
+    @staticmethod
+    def error_message(player: Player, values):
+        return other_text_errors(values, [('n5_5', 'n5_other')])
 
     @staticmethod
     def get_form_fields(player: Player):

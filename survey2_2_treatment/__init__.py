@@ -372,7 +372,9 @@ class F(SurveyPage):
 
     @staticmethod
     def error_message(player: Player, values):
-        errors = {}
+        errors = other_text_errors(
+            values, [('f1g1_14', 'f1g1_other'), ('f2g1_11', 'f2g1_other')]
+        )
         for fields in [F1_FIELDS, F2_FIELDS]:
             if count_checked(values, fields) > 3:
                 errors[fields[0]] = '최대 3개까지 선택해 주십시오.'

@@ -31,7 +31,7 @@
     <div data-show-if="n3=4">
         <p class="q-text">N5. "해당 없음"을 선택하신 이유는 무엇입니까? (해당하는 것 모두)</p>
         {{ with cb=n5 }}{{ include 'global/_checkboxes.html' }}{{ endwith }}
-        <div class="sub-input" data-show-if="n5_5=y">{{ formfield 'n5_other' }}</div>
+        <div class="sub-input" data-q data-show-if="n5_5=y">{{ formfield 'n5_other' }}</div>
     </div>
 </div>
 {{ endif }}
