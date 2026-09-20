@@ -17,8 +17,18 @@
  *
  * 숨겨지는 문항의 입력값은 지워지고, 서버(__init__.py)에서도 한 번 더 지운다.
  */
+/* 화면 맨 위에 뜨는 오류 안내 문구 (oTree 기본 문구를 이 문장으로 바꾼다).
+   문구를 바꾸고 싶으면 아래 ERROR_BANNER 한 줄만 고치면 된다. */
+var ERROR_BANNER = '아직 제출되지 않았습니다. 아래 빨간색으로 표시된 문항을 확인해 주세요.';
+var OTREE_DEFAULT_BANNER = '입력 양식의 내용이 잘못되었습니다. 바로잡아주세요.';
+
 (function () {
     'use strict';
+
+    var banner = document.querySelector('.otree-form-errors');
+    if (banner && banner.textContent.trim() === OTREE_DEFAULT_BANNER) {
+        banner.textContent = ERROR_BANNER;
+    }
 
     var form = document.getElementById('form');
     if (!form) return;
