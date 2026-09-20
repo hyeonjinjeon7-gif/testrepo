@@ -2,8 +2,9 @@
  * 설문 공통 동작 (설문 1-4 공용)
  *
  * HTML에서 쓰는 속성:
- *   data-q                     응답 확인 대상 문항 단위 (표의 한 행, 문항 하나)
- *   data-q-optional            응답 확인에서 제외 (선택 문항)
+ *   data-q                     필수 응답 문항 단위 (표의 한 행, 문항 하나).
+ *                              응답하지 않으면 다음 페이지로 넘어갈 수 없다
+ *   data-q-optional            건너뛸 수 있는 문항 (설문지에서 '선택' 또는 '건너뛰어도 됨'으로 정한 문항)
  *   data-must-check="메시지"    안의 체크박스를 체크해야만 다음으로 넘어갈 수 있다 (동의 문항)
  *   data-show-if="a1=5"        a1 값이 5일 때만 표시 (쉼표로 여러 값: "b4=1,2,3",
  *                              | 로 여러 문항: "b8_rank1|b8_rank2=8",
@@ -22,6 +23,8 @@
    문구를 바꾸고 싶으면 아래 ERROR_BANNER 한 줄만 고치면 된다. */
 var ERROR_BANNER = '아직 완료되지 않은 문항이 있습니다. 아래 표시된 항목을 다시 확인해 주세요.';
 var OTREE_DEFAULT_BANNER = '입력 양식의 내용이 잘못되었습니다. 바로잡아주세요.';
+/* 응답하지 않은 문항이 있을 때 (N 자리에 개수가 들어간다) */
+var UNANSWERED_BANNER = '아직 응답하지 않은 문항이 N개 있습니다. 아래 표시된 문항에 응답해 주셔야 다음으로 넘어갈 수 있습니다.';
 
 (function () {
     'use strict';
@@ -173,7 +176,7 @@ var OTREE_DEFAULT_BANNER = '입력 양식의 내용이 잘못되었습니다. �
         });
     }
 
-    /* ---------- 응답 확인 (Qualtrics의 Request Response) ---------- */
+    /* ---------- 필수 응답 확인 (Qualtrics의 Force Response) ---------- */
     function isAnswered(unit) {
         var radios = unit.querySelectorAll('input[type=radio]');
         if (radios.length) {
@@ -194,6 +197,23 @@ var OTREE_DEFAULT_BANNER = '입력 양식의 내용이 잘못되었습니다. �
             if (t.value.trim() === '') return false;
         }
         return true;
+    }
+
+    /* ---------- 화면 맨 위 안내 띠 ---------- */
+    function showBanner(text) {
+        var box = document.querySelector('.otree-form-errors');
+        if (!box) {
+            box = document.createElement('div');
+            box.className = 'otree-form-errors alert alert-danger';
+            var body = document.querySelector('.otree-body');
+            var title = document.getElementById('_otree-title');
+            if (title && title.nextSibling) {
+                body.insertBefore(box, title.nextSibling);
+            } else {
+                body.insertBefore(box, body.firstChild);
+            }
+        }
+        box.textContent = text;
     }
 
     /* ---------- 반드시 체크해야 하는 동의 문항 ---------- */
@@ -228,7 +248,6 @@ var OTREE_DEFAULT_BANNER = '입력 양식의 내용이 잘못되었습니다. �
         }
     });
 
-    var confirmed = false;
     form.addEventListener('submit', function (e) {
         var blocked = requiredCheckMissing();
         if (blocked) {
@@ -237,7 +256,6 @@ var OTREE_DEFAULT_BANNER = '입력 양식의 내용이 잘못되었습니다. �
             showMustCheck(blocked);
             return;
         }
-        if (confirmed) return;
         form.querySelectorAll('.unanswered').forEach(function (el) {
             el.classList.remove('unanswered');
         });
@@ -250,23 +268,23 @@ var OTREE_DEFAULT_BANNER = '입력 양식의 내용이 잘못되었습니다. �
         if (missing.length === 0) return;
 
         missing.forEach(function (u) { u.classList.add('unanswered'); });
-        var msg = '응답하지 않은 문항이 ' + missing.length + '개 있습니다.\n' +
-            '[확인]을 누르면 그대로 다음으로 넘어가고, [취소]를 누르면 표시된 문항으로 돌아갑니다.';
-        if (window.confirm(msg)) {
-            confirmed = true;
-            return; // 그대로 제출
-        }
         e.preventDefault();
         e.stopImmediatePropagation();
+        showBanner(UNANSWERED_BANNER.replace('N', missing.length));
         missing[0].scrollIntoView({behavior: 'smooth', block: 'center'});
     });
 
     form.addEventListener('change', function (e) {
         onCheckboxChange(e);
         updateConditions();
-        if (e.target.closest('.unanswered')) {
-            var unit = e.target.closest('.unanswered');
-            if (isAnswered(unit)) unit.classList.remove('unanswered');
+        var unit = e.target.closest && e.target.closest('.unanswered');
+        if (unit && isAnswered(unit)) {
+            unit.classList.remove('unanswered');
+            // 표시된 문항에 모두 응답했으면 위 안내 띠도 지운다
+            if (!form.querySelector('.unanswered')) {
+                var box = document.querySelector('.otree-form-errors');
+                if (box) box.remove();
+            }
         }
     });
     form.addEventListener('input', updateSums);
