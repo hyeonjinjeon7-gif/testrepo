@@ -1,0 +1,40 @@
+{{ extends 'global/SurveyPage.html' }}
+
+{{ block title }}H. 직원 설문 안내 전달 협조{{ endblock }}
+
+{{ block content }}
+
+<div class="notice">
+    본 연구는 직원들의 근무 실태와 의견도 함께 조사합니다. 진행 절차는 다음과 같습니다.
+    <ol>
+        <li>아래에 직원분들께 설문 안내를 전달해 주실 <b>담당 직원 한 분(총무, 인사 담당자 등)의 이메일 주소</b>를 적어 주십시오.
+            지금 적기 어려우시면 내일 연구팀이 앞에서 남겨 주신 대표님 이메일로 여쭙겠습니다.</li>
+        <li>연구팀이 담당 직원분께 직원 설문 링크와 안내문을 이메일로 보내드리고, 담당 직원분은 이를 직원분들께 전달해 주시면 됩니다.
+            직원분들 전체의 연락처를 연구팀에 알려주실 필요는 없습니다.</li>
+        <li>직원분들은 각자 링크로 접속해 참여 여부를 스스로 결정하며,
+            <b>설문을 완료한 직원 한 분 한 분께 배달의민족 상품권 2만원을 지급합니다</b> (연구비에서 지급, 회사 부담 없음).</li>
+    </ol>
+    직원 설문은 익명으로 진행되며, <b>개별 직원의 응답, 응답 여부, 응답자 명단은 회사(담당 직원 포함)에 일절 제공되지 않습니다.</b>
+</div>
+
+<div class="q" data-q>{{ formfield 'h1' }}</div>
+
+<div class="q" data-q data-show-if="h1=3">{{ formfield 'h1_1' }}</div>
+
+<div class="q" data-q data-show-if="h1=1,2;h1_1=1">
+    <span class="q-text">{{ form.h2.label.text }}</span>
+    <div class="inline-num">{{ form.h2 }} <span>명</span></div>
+    {{ formfield_errors 'h2' }}
+</div>
+
+<div class="q" data-q data-show-if="h1=1">
+    <span class="q-text">H3. 담당 직원의 성함과 이메일 주소를 적어 주십시오.</span>
+    <p class="q-note">설문 안내 전달 목적으로만 사용하며, 전달이 끝나면 파기합니다.</p>
+    {{ formfield 'h3_name' }}
+    {{ formfield 'h3_title' }}
+    {{ formfield 'h3_email' }}
+</div>
+
+<div class="btn-next-wrap"><button class="otree-btn-next btn btn-primary">다음</button></div>
+
+{{ endblock }}

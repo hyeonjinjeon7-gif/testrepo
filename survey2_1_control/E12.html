@@ -1,0 +1,23 @@
+{{ extends 'global/SurveyPage.html' }}
+
+{{ block title }}E. 도입 및 정비 의향{{ endblock }}
+
+{{ block content }}
+
+<div class="q" data-q>
+    <span class="q-text">{{ form.e1.label.text }}</span>
+    <p class="q-note">0 (전혀 없음) ~ 100 (매우 높음) 사이의 숫자로 적어 주십시오.</p>
+    <div class="num-0-100">{{ form.e1 }}</div>
+    {{ formfield_errors 'e1' }}
+</div>
+
+<div class="q" data-q>
+    <span class="q-text">{{ form.e2.label.text }}</span>
+    <p class="q-note">0 (전혀 없음) ~ 100 (매우 높음) 사이의 숫자로 적어 주십시오.</p>
+    <div class="num-0-100">{{ form.e2 }}</div>
+    {{ formfield_errors 'e2' }}
+</div>
+
+<div class="btn-next-wrap"><button class="otree-btn-next btn btn-primary">다음</button></div>
+
+{{ endblock }}

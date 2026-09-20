@@ -1,0 +1,23 @@
+{{ extends 'global/SurveyPage.html' }}
+
+{{ block title }}L. 유연근무와 일가정양립{{ endblock }}
+
+{{ block content }}
+
+<div class="q">
+    <span class="q-text">L1. 귀하의 회사에서 다음 제도를 사용할 수 있다고 알고 있습니까?</span>
+    {{ with mx=l1 }}{{ include 'global/_matrix.html' }}{{ endwith }}
+</div>
+
+<div class="q" data-q>{{ formfield 'l2' }}</div>
+
+<div class="q" data-show-if="l2=2">
+    <span class="q-text">L3. 사용하지 않은 가장 큰 이유는 무엇입니까? (최대 2개)</span>
+    {{ formfield_errors 'l3_1' }}
+    {{ with cb=l3 }}{{ include 'global/_checkboxes.html' }}{{ endwith }}
+    <div class="sub-input" data-show-if="l3_10=y">{{ formfield 'l3_other' }}</div>
+</div>
+
+<div class="btn-next-wrap"><button class="otree-btn-next btn btn-primary">다음</button></div>
+
+{{ endblock }}

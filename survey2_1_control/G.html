@@ -1,0 +1,26 @@
+{{ extends 'global/SurveyPage.html' }}
+
+{{ block title }}G. 자료와 후속 지원 신청{{ endblock }}
+
+{{ block content }}
+
+<div class="q" data-q>{{ formfield 'g1' }}</div>
+
+<div class="q" data-q>
+    {{ formfield 'g2' }}
+    <p class="q-note">신청이 많을 경우 신청하신 분들 중 일부 기업을 선정하여 제공해 드립니다.</p>
+</div>
+
+<div class="q" data-q>
+    {{ formfield 'g3' }}
+    <div data-show-if="g3=1">
+        <div class="sub-input">{{ formfield 'g3_items' }}</div>
+        <div class="sub-input">{{ formfield 'g3_timing' }}</div>
+        <div class="sub-input">{{ formfield 'g3_owner' }}</div>
+        <div class="sub-input">{{ formfield 'g3_support' }}</div>
+    </div>
+</div>
+
+<div class="btn-next-wrap"><button class="otree-btn-next btn btn-primary">다음</button></div>
+
+{{ endblock }}

@@ -1,0 +1,27 @@
+{{ extends 'global/SurveyPage.html' }}
+
+{{ block title }}I. 추적조사 동의{{ endblock }}
+
+{{ block content }}
+
+<div class="q" data-q>
+    {{ formfield 'i1' }}
+    <p class="q-note">후속 설문 안내는 앞에서 남겨 주신 연락처로 드립니다. 참여해 주신 분께는 회차별 사례를 지급합니다.</p>
+</div>
+
+<div class="q" data-q data-q-optional>
+    {{ formfield 'a8_consent' }}
+    <p class="q-note">
+        본 연구는 고용보험 등 행정자료와의 연계를 통해 추후 설문에 응답하지 않으셔도 고용 현황 등을 분석할 수 있습니다.
+        연계에 동의하시는 경우 아래 번호를 적어 주십시오. 모르시면 비워두셔도 됩니다.
+        자료는 통계 목적 외에는 사용되지 않습니다.
+    </p>
+    <div data-show-if="a8_consent=1">
+        <div class="sub-input">{{ formfield 'a8_biz_no' }}</div>
+        <div class="sub-input">{{ formfield 'a8_ei_no' }}</div>
+    </div>
+</div>
+
+<div class="btn-next-wrap"><button class="otree-btn-next btn btn-primary">다음</button></div>
+
+{{ endblock }}

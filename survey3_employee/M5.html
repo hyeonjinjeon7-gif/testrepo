@@ -1,0 +1,20 @@
+{{ extends 'global/SurveyPage.html' }}
+
+{{ block title }}M. 노무관리와 직장 내 관계{{ endblock }}
+
+{{ block content }}
+
+<div class="q">
+    <span class="q-text">M5. 다음 문장에 얼마나 동의하십니까?</span>
+    {{ with mx=m5 }}{{ include 'global/_matrix.html' }}{{ endwith }}
+</div>
+
+<div class="q">
+    <span class="q-text">M6. 귀하의 회사에 대해 다음 문장에 얼마나 동의하십니까?</span>
+    <p class="q-note">직접 경험하지 않았더라도 회사 분위기를 기준으로 답해 주십시오.</p>
+    {{ with mx=m6 }}{{ include 'global/_matrix.html' }}{{ endwith }}
+</div>
+
+<div class="btn-next-wrap"><button class="otree-btn-next btn btn-primary">다음</button></div>
+
+{{ endblock }}

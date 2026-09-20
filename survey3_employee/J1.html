@@ -1,0 +1,25 @@
+{{ extends 'global/SurveyPage.html' }}
+
+{{ block title }}재직 회사{{ endblock }}
+
+{{ block content }}
+
+<div class="q" data-q>
+    <span class="q-text">J1. 재직 중인 회사를 목록에서 선택해 주십시오.</span>
+    <p class="q-note">
+        목록은 세미나에 참여한 회사이며, 응답 내용과 회사를 연결하는 목적으로만 사용됩니다.
+        회사에는 귀하의 응답이 절대 제공되지 않습니다.
+    </p>
+    {{ formfield 'j1' label='' }}
+    <div class="sub-input" data-show-if="j1=999">{{ formfield 'j1_other' }}</div>
+</div>
+
+{{ if no_company_list }}
+<p class="small-note">
+    ※ 연구팀 참고: 회사 목록이 비어 있습니다. survey3_employee/companies.txt 에 회사명을 적고 서버를 다시 켜 주세요.
+</p>
+{{ endif }}
+
+<div class="btn-next-wrap"><button class="otree-btn-next btn btn-primary">다음</button></div>
+
+{{ endblock }}

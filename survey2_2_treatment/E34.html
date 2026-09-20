@@ -1,0 +1,16 @@
+{{ extends 'global/SurveyPage.html' }}
+
+{{ block title }}E. 도입 및 정비 의향{{ endblock }}
+
+{{ block content }}
+
+{{ for table in tables }}
+<div class="q">
+    <span class="q-text">{{ table.title }}</span>
+    {{ with mx=table }}{{ include 'global/_matrix.html' }}{{ endwith }}
+</div>
+{{ endfor }}
+
+<div class="btn-next-wrap"><button class="otree-btn-next btn btn-primary">다음</button></div>
+
+{{ endblock }}

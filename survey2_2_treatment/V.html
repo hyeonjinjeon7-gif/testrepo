@@ -1,0 +1,74 @@
+{{ extends 'global/SurveyPage.html' }}
+
+{{ block title }}V. 경영 현황{{ endblock }}
+
+{{ block content }}
+
+<div class="notice">
+    마지막으로 귀사(현 소속)의 경영 현황을 여쭙습니다.
+    정확한 수치를 모르시면 대략적인 추정치로 답해 주셔도 되고, 답하기 어려운 문항은 건너뛰셔도 됩니다.
+    법인(회사) 전체 기준으로 답해 주십시오.
+</div>
+
+<div class="q" data-q>
+    <span class="q-text">{{ form.v1.label.text }}</span>
+    <div class="inline-num">약 {{ form.v1 }} <span>백만원</span></div>
+    {{ formfield_errors 'v1' }}
+    <div data-show-if-blank="v1">{{ formfield 'v1_1' }}</div>
+</div>
+
+<div class="q" data-q>
+    <span class="q-text">{{ form.v2.label.text }}</span>
+    <div class="inline-num">약 {{ form.v2 }} <span>백만원</span></div>
+    {{ formfield_errors 'v2' }}
+    <div data-show-if-blank="v2">{{ formfield 'v2_1' }}</div>
+</div>
+
+<div class="q" data-q>
+    <span class="q-text">V3. 3년 전(2022년 말) 귀사(현 소속)의 전체 직원 수는 몇 명이었습니까?</span>
+    <p class="q-note">대표 제외, 당시 창업 전이면 0</p>
+    <div class="inline-num">
+        <span>정규직</span> {{ form.v3_regular }} <span>명</span>
+        <span>비정규직</span> {{ form.v3_nonregular }} <span>명</span>
+    </div>
+    {{ formfield_errors 'v3_regular' }}
+    {{ formfield_errors 'v3_nonregular' }}
+</div>
+
+<div class="q" data-q>
+    <span class="q-text">{{ form.v4.label.text }}</span>
+    <div class="inline-num">약 {{ form.v4 }} <span>시간</span></div>
+    {{ formfield_errors 'v4' }}
+</div>
+
+<div class="q" data-q>
+    <span class="q-text">{{ form.v5.label.text }}</span>
+    <p class="q-note">급여, 상여, 퇴직급여, 4대보험 회사 부담분 포함</p>
+    <div class="inline-num">약 {{ form.v5 }} <span>%</span></div>
+    {{ formfield_errors 'v5' }}
+</div>
+
+<div class="q" data-q>
+    <span class="q-text">{{ form.v6.label.text }}</span>
+    <p class="q-note">원재료, 부품, 상품 매입, 외주가공비, 임차료 등</p>
+    <div class="inline-num">약 {{ form.v6 }} <span>%</span></div>
+    {{ formfield_errors 'v6' }}
+</div>
+
+<div class="q" data-q>
+    <span class="q-text">{{ form.v7.label.text }}</span>
+    <p class="q-note">기계, 설비, 차량, 건물 등</p>
+    <div class="inline-num">약 {{ form.v7 }} <span>백만원</span></div>
+    {{ formfield_errors 'v7' }}
+</div>
+
+<div class="q" data-q>
+    <span class="q-text">{{ form.v8.label.text }}</span>
+    <p class="q-note">공장, 사무소, 매장 등</p>
+    <div class="inline-num">{{ form.v8 }} <span>개</span></div>
+    {{ formfield_errors 'v8' }}
+</div>
+
+<div class="btn-next-wrap"><button class="otree-btn-next btn btn-primary">다음</button></div>
+
+{{ endblock }}

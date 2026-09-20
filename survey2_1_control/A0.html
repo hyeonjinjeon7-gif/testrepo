@@ -1,0 +1,22 @@
+{{ extends 'global/SurveyPage.html' }}
+
+{{ block title }}회사명과 연락처{{ endblock }}
+
+{{ block content }}
+
+<div class="q" data-q>
+    <span class="q-text">A0. 귀사(현 소속)의 회사명을 입력해 주십시오.</span>
+    <p class="q-note">사전설문과 연결하는 목적으로만 사용되며 외부에 공개되지 않습니다.</p>
+    {{ formfield 'a0' }}
+</div>
+
+<div class="q" data-q>
+    <span class="q-text">A0-1. 귀하의 연락처를 남겨 주십시오.</span>
+    <p class="q-note">휴대전화 또는 이메일 중 하나 이상을 사전설문에서 적으신 것과 같게 적어 주십시오.</p>
+    {{ formfield 'a0_1_phone' }}
+    {{ formfield 'a0_1_email' }}
+</div>
+
+<div class="btn-next-wrap"><button class="otree-btn-next btn btn-primary">다음</button></div>
+
+{{ endblock }}

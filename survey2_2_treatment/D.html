@@ -1,0 +1,20 @@
+{{ extends 'global/SurveyPage.html' }}
+
+{{ block title }}D. 강연 평가{{ endblock }}
+
+{{ block content }}
+
+<div class="q" data-q>{{ formfield 'd0' }}</div>
+<div class="q" data-q>{{ formfield 'd1' }}</div>
+<div class="q" data-q>{{ formfield 'd2' }}</div>
+<div class="q" data-q>{{ formfield 'd3' }}</div>
+<div class="q" data-q data-q-optional>{{ formfield 'd4' }}</div>
+
+<div class="q" data-q>
+    {{ formfield 'd5' }}
+    <div class="sub-input" data-show-if="d5=1">{{ formfield 'd5_text' }}</div>
+</div>
+
+<div class="btn-next-wrap"><button class="otree-btn-next btn btn-primary">다음</button></div>
+
+{{ endblock }}

@@ -1,0 +1,23 @@
+{{ extends 'global/SurveyPage.html' }}
+
+{{ block title }}O. 상품권 지급과 후속 설문{{ endblock }}
+
+{{ block content }}
+
+<div class="notice">
+    상품권(배달의민족 2만원) 지급과 6개월, 12개월 후 짧은 후속 설문(약 5분, 회차마다 2만원 상품권 별도 지급) 안내를 위해
+    휴대전화 번호를 남겨 주십시오.
+    <b>연락처는 응답 내용과 분리 보관되며, 회사에 제공되지 않고, 연구 종료 후 파기됩니다.</b>
+</div>
+
+<div class="q" data-q>
+    <span class="q-text">O1. 휴대전화 번호</span>
+    {{ formfield 'o1' label='' }}
+</div>
+
+<div class="q" data-q>{{ formfield 'o2' }}</div>
+<div class="q" data-q>{{ formfield 'o3' }}</div>
+
+<div class="btn-next-wrap"><button class="otree-btn-next btn btn-primary">다음</button></div>
+
+{{ endblock }}

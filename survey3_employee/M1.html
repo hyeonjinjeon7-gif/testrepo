@@ -1,0 +1,32 @@
+{{ extends 'global/SurveyPage.html' }}
+
+{{ block title }}M. 노무관리와 직장 내 관계{{ endblock }}
+
+{{ block content }}
+
+<div class="q">
+    <span class="q-text">M1. 귀하의 회사에 대해 답해 주십시오.</span>
+    {{ with mx=m1 }}{{ include 'global/_matrix.html' }}{{ endwith }}
+</div>
+
+<div class="q" data-q data-q-optional>
+    {{ formfield 'm2' }}
+    <p class="q-note">
+        업무상 적정 범위를 넘어선 폭언이나 모욕, 따돌림, 부당한 업무 지시, 사적 심부름 등.
+        둘 다 해당하면 첫 번째를 선택해 주십시오. 이 문항은 건너뛰셔도 됩니다.
+    </p>
+</div>
+
+<div class="q" data-q>
+    {{ formfield 'm3' }}
+    <div data-show-if="m3=3">
+        <div class="sub-input">
+            {{ formfield 'm4' }}
+            <div class="sub-input" data-show-if="m4=4">{{ formfield 'm4_other' }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="btn-next-wrap"><button class="otree-btn-next btn btn-primary">다음</button></div>
+
+{{ endblock }}

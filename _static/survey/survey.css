@@ -1,5 +1,15 @@
 /* 설문 공통 스타일 (설문 1-4 공용) */
 
+/* 색은 여기서만 바꾸면 설문 전체에 적용된다 (연한 녹색 계열) */
+:root {
+    --survey-green: #4e9e6a;          /* 버튼, 선택 표시 */
+    --survey-green-dark: #3d7f54;     /* 버튼 눌렀을 때, 제목 글씨 */
+    --survey-green-line: #cfe5d6;     /* 표와 상자 테두리 */
+    --survey-green-bg: #f1f8f3;       /* 안내 상자 배경 */
+    --survey-green-head: #e4f1e8;     /* 표 머리글 배경 */
+    --survey-green-row: #f7fbf8;      /* 표 행에 마우스 올렸을 때 */
+}
+
 .otree-body {
     max-width: 860px;
     padding-bottom: 40px;
@@ -14,8 +24,8 @@
 .block-title {
     font-size: 1.1rem;
     font-weight: 700;
-    color: #1f3a5f;
-    border-bottom: 2px solid #1f3a5f;
+    color: var(--survey-green-dark);
+    border-bottom: 2px solid var(--survey-green);
     padding-bottom: 6px;
     margin: 8px 0 20px;
 }
@@ -71,8 +81,8 @@
 
 /* 안내문, 동의서 */
 .notice {
-    background: #f6f8fb;
-    border: 1px solid #dfe5ee;
+    background: var(--survey-green-bg);
+    border: 1px solid var(--survey-green-line);
     border-radius: 8px;
     padding: 16px 18px;
     margin-bottom: 20px;
@@ -88,13 +98,13 @@
 
 .consent-table th,
 .consent-table td {
-    border: 1px solid #dfe5ee;
+    border: 1px solid var(--survey-green-line);
     padding: 8px 10px;
     vertical-align: top;
 }
 
 .consent-table th {
-    background: #eef2f7;
+    background: var(--survey-green-head);
     width: 28%;
     font-weight: 600;
 }
@@ -114,13 +124,13 @@
 
 .mx th,
 .mx td {
-    border-bottom: 1px solid #e3e6ea;
+    border-bottom: 1px solid var(--survey-green-line);
     padding: 8px 6px;
     vertical-align: middle;
 }
 
 .mx thead th {
-    background: #f1f4f8;
+    background: var(--survey-green-head);
     font-weight: 600;
     font-size: 0.85rem;
     text-align: center;
@@ -153,7 +163,7 @@
 }
 
 .mx-row:hover {
-    background: #fafbfd;
+    background: var(--survey-green-row);
 }
 
 /* 복수 선택 */
@@ -201,7 +211,7 @@
     }
 
     .mx tr.mx-row {
-        border: 1px solid #e3e6ea;
+        border: 1px solid var(--survey-green-line);
         border-radius: 8px;
         padding: 10px 12px;
         margin-bottom: 10px;
@@ -232,4 +242,31 @@
     .consent-table th {
         width: 34%;
     }
+}
+
+/* 버튼과 선택 표시 색 (부트스트랩 기본 파란색을 덮어씀) */
+.btn-primary {
+    background-color: var(--survey-green);
+    border-color: var(--survey-green);
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary:disabled {
+    background-color: var(--survey-green-dark);
+    border-color: var(--survey-green-dark);
+}
+
+.btn-primary:focus,
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(78, 158, 106, 0.25);
+    border-color: var(--survey-green);
+}
+
+.form-check-input:checked {
+    background-color: var(--survey-green);
+    border-color: var(--survey-green);
 }

@@ -1,0 +1,31 @@
+{{ extends 'global/SurveyPage.html' }}
+
+{{ block title }}L. 유연근무와 일가정양립{{ endblock }}
+
+{{ block content }}
+
+<div class="q">
+    <span class="q-text">L4. 다음 문장에 얼마나 동의하십니까?</span>
+    {{ with mx=l4 }}{{ include 'global/_matrix.html' }}{{ endwith }}
+</div>
+
+<div class="q">
+    <span class="q-text">L5. 최근 한 달 동안 다음을 얼마나 자주 경험하셨습니까?</span>
+    {{ with mx=l5 }}{{ include 'global/_matrix.html' }}{{ endwith }}
+</div>
+
+{{ if has_children }}
+<div class="q">
+    <span class="q-text">L6. 자녀 양육과 관련하여 다음 문장에 얼마나 동의하십니까?</span>
+    {{ with mx=l6 }}{{ include 'global/_matrix.html' }}{{ endwith }}
+</div>
+{{ else }}
+<div class="q">
+    <span class="q-text">L7. 앞으로 자녀를 갖게 된다고 가정할 때, 다음 문장에 얼마나 동의하십니까?</span>
+    {{ with mx=l7 }}{{ include 'global/_matrix.html' }}{{ endwith }}
+</div>
+{{ endif }}
+
+<div class="btn-next-wrap"><button class="otree-btn-next btn btn-primary">다음</button></div>
+
+{{ endblock }}
