@@ -16,6 +16,7 @@
 <div class="q" data-q>
     <span class="q-text">{{ form.v1.label.text }}</span>
     <div class="inline-num">약 {{ form.v1 }} <span>백만원</span></div>
+    <span class="amount-preview" data-amount-of="v1" data-amount-unit="1000000"></span>
     {{ formfield_errors 'v1' }}
     <div data-show-if-blank="v1">{{ formfield 'v1_1' }}</div>
 </div>
@@ -23,6 +24,7 @@
 <div class="q" data-q>
     <span class="q-text">{{ form.v2.label.text }}</span>
     <div class="inline-num">약 {{ form.v2 }} <span>백만원</span></div>
+    <span class="amount-preview" data-amount-of="v2" data-amount-unit="1000000"></span>
     {{ formfield_errors 'v2' }}
     <div data-show-if-blank="v2">{{ formfield 'v2_1' }}</div>
 </div>
@@ -62,6 +64,7 @@
     <span class="q-text">{{ form.v7.label.text }}</span>
     <p class="q-note">기계, 설비, 차량, 건물 등</p>
     <div class="inline-num">약 {{ form.v7 }} <span>백만원</span></div>
+    <span class="amount-preview" data-amount-of="v7" data-amount-unit="1000000"></span>
     {{ formfield_errors 'v7' }}
 </div>
 

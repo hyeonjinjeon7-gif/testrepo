@@ -334,6 +334,7 @@ var UNANSWERED_BANNER = '아직 응답하지 않은 문항이 N개 있습니다.
     form.addEventListener('input', function () {
         updateSums();
         updateAmounts();
+        updateConditions();  // 금액을 적는 즉시 "구간 선택" 같은 보조 문항이 숨겨지도록
     });
 
     setupDigitsOnly();
