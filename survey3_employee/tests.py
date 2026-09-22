@@ -50,7 +50,9 @@ class PlayerBot(Bot):
             yield K13, dict(k13=600, k13_1=350, k13_2=250)
             expect(self.player.k13_2, 250)
         else:
-            yield K13, dict(k13=300, k13_1=300)
+            # "응답하지 않음"을 고르면 입력값은 저장되지 않는다
+            yield K13, dict(k13=300, k13_1=300, k13_refuse=True)
+            expect(self.player.field_maybe_none('k13'), None)
 
         def l_block():
             l1 = {f: 1 for f in L1_FIELDS}
@@ -70,8 +72,13 @@ class PlayerBot(Bot):
 
         def m_block():
             yield M_page('M1'), dict(
-                {f: 1 for f in M1_FIELDS}, m2=3, m3=3, m4=4, m4_other='말하기 어려워서'
+                {f: 1 for f in M1_FIELDS},
+                m2=3 if parent else C.PREFER_NOT,
+                m3=3,
+                m4=4,
+                m4_other='말하기 어려워서',
             )
+            expect(self.player.m2, 3 if parent else C.PREFER_NOT)
             expect(self.player.m4_other, '말하기 어려워서')
 
             m5 = {f: 3 for f in M5_FIELDS}

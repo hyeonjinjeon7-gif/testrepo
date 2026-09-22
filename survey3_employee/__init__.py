@@ -65,7 +65,7 @@ class C(BaseConstants):
 
     ATTN_CORRECT = 4  # M5 attention check 정답 "다소 동의"
 
-    PREFER_NOT = 9  # 민감 문항의 "응답을 원하지 않음" 보기
+    PREFER_NOT = 9  # 민감 문항의 "응답하지 않음" 보기
 
 
 class Subsession(BaseSubsession):
@@ -165,6 +165,7 @@ class Player(BasePlayer):
     k13 = number('K13. 월평균 가구소득 (만원)', max=100000)
     k13_1 = number('K13-1. 월평균 본인 노동소득 (만원)', max=100000)
     k13_2 = number('K13-2. 월평균 배우자 노동소득 (만원, 소득이 없으면 0)', max=100000)
+    k13_refuse = check('소득 문항에 응답하지 않음')
 
     # ----------------------------------------------------------------- L. 유연근무
     l1_1 = radio(C.FLEX_ITEMS[0], C.L1_SCALE)
@@ -218,12 +219,13 @@ class Player(BasePlayer):
     m1_3 = radio('회사에 고충이나 불만을 제기할 수 있는 공식 절차(고충처리 제도)가 있다', C.M1_SCALE)
     m1_4 = radio('지난 1년간 회사에서 직장 내 괴롭힘 예방교육을 받았다', C.M1_SCALE)
 
-    m2 = radio(
+    m2 = radio(  # 민감정보
         'M2. 지난 12개월 동안 직장에서 직장 내 괴롭힘을 경험하거나 목격한 적이 있습니까?',
         [
             [1, '본인이 직접 겪은 적이 있다'],
             [2, '다른 직원이 겪는 것을 본 적이 있다'],
             [3, '없다'],
+            [C.PREFER_NOT, '응답하지 않음'],
         ],
     )
     m3 = radio(
@@ -278,17 +280,17 @@ class Player(BasePlayer):
             [2, '갖고 싶지만 아직 결정하지 못했다'],
             [3, '계획이 없다'],
             [4, '해당 없음'],
-            [C.PREFER_NOT, '응답을 원하지 않음'],
+            [C.PREFER_NOT, '응답하지 않음'],
         ],
     )
     n4 = number('N4. 앞으로 3년 이내에 자녀를 가질(또는 더 가질) 가능성', max=100)  # 민감정보
-    n4_refuse = check('응답을 원하지 않음')
+    n4_refuse = check('응답하지 않음')
     n5_1 = check('결혼(또는 동거) 계획이 없어서')  # 민감정보
     n5_2 = check('자녀 계획을 이미 마쳤거나 더 가질 생각이 없어서')
     n5_3 = check('나이 또는 건강상 이유로')
     n5_4 = check('본인 또는 배우자가 현재 임신 중이어서')
     n5_5 = check('기타')
-    n5_6 = check('응답을 원하지 않음')
+    n5_6 = check('응답하지 않음')
     n5_other = text('기타 (직접 입력)')
 
     # ----------------------------------------------------------------- O. 연락처
@@ -314,8 +316,9 @@ M1_FIELDS = field_names('m1_', 4)
 M5_FIELDS = ['m5_1', 'm5_2', 'm5_3', 'm5_4', 'm5_5', 'm5_attn', 'm5_6']
 M6_FIELDS = field_names('m6_', 4)
 N2_FIELDS = field_names('n2_', 3)
-N5_FIELDS = field_names('n5_', 6)  # 6번은 "응답을 원하지 않음"
-SENSITIVE_FIELDS = ['k5', 'n3', 'n4', 'n4_refuse'] + N5_FIELDS + ['n5_other']
+N5_FIELDS = field_names('n5_', 6)  # 6번은 "응답하지 않음"
+SENSITIVE_FIELDS = ['k5', 'm2', 'k13', 'k13_1', 'k13_2', 'k13_refuse',
+                    'n3', 'n4', 'n4_refuse'] + N5_FIELDS + ['n5_other']
 
 
 def sensitive_ok(player: Player):
@@ -417,7 +420,7 @@ class K13(SurveyPage):
         fields = ['k13', 'k13_1']
         if player.field_maybe_none('k3') == 2:  # 기혼
             fields.append('k13_2')
-        return fields
+        return fields + ['k13_refuse']
 
     @staticmethod
     def error_message(player: Player, values):
@@ -430,6 +433,12 @@ class K13(SurveyPage):
         if values.get('k13_2') is not None and values['k13_2'] > total:
             errors['k13_2'] = '가구소득보다 클 수 없습니다. 확인해 주십시오.'
         return errors
+
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+        # "응답하지 않음"을 고르면 입력값은 남기지 않는다
+        if player.field_maybe_none('k13_refuse'):
+            clear_fields(player, ['k13', 'k13_1', 'k13_2'])
 
 
 # ----------------------------- L 블록 -----------------------------
@@ -540,7 +549,7 @@ class N(SurveyPage):
     def error_message(player: Player, values):
         errors = other_text_errors(values, [('n5_5', 'n5_other')])
         if values.get('n5_6') and count_checked(values, N5_FIELDS[:-1]) > 0:
-            errors['n5_1'] = '"응답을 원하지 않음"은 다른 항목과 함께 선택할 수 없습니다.'
+            errors['n5_1'] = '"응답하지 않음"은 다른 항목과 함께 선택할 수 없습니다.'
         return errors
 
     @staticmethod

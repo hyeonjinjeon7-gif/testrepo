@@ -8,7 +8,7 @@
     마지막으로 귀하의 직장 생활과 앞으로의 계획에 대해 여쭙습니다.
     이 부분의 응답은 <b>회사에 전달되지 않으며</b> 전체 집계로만 분석됩니다.
     {{ if sensitive }}
-    가족 계획에 관한 문항은 답하고 싶지 않으시면 <b>"응답을 원하지 않음"</b>을 선택해 주십시오.
+    가족 계획에 관한 문항은 답하고 싶지 않으시면 <b>"응답하지 않음"</b>을 선택해 주십시오.
     {{ endif }}
 </div>
 
@@ -30,7 +30,7 @@
         {{ formfield_errors 'n4' }}
         <div class="form-check">
             {{ form.n4_refuse }}
-            <label class="form-check-label" for="{{ form.n4_refuse.id }}">응답을 원하지 않음</label>
+            <label class="form-check-label" for="{{ form.n4_refuse.id }}">응답하지 않음</label>
         </div>
     </div>
 
