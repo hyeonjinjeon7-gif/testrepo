@@ -18,6 +18,8 @@
  *   data-exclusive="c5_6"      (체크박스 묶음) 이 보기를 고르면 나머지 해제
  *   data-sum="a5_m_"           이름이 a5_m_ 로 시작하는 숫자 입력칸의 합계를 표시
  *   data-digits                안의 입력칸에 숫자와 '-' 만 입력되게 한다 (휴대전화, 사업자번호 등)
+ *   data-amount-of="k13"       k13 에 적은 숫자를 한국어 금액으로 풀어서 보여준다
+ *   data-amount-unit="10000"   입력 단위를 원으로 환산하는 값 (만원=10000, 백만원=1000000)
  *
  * 숨겨지는 문항의 입력값은 지워지고, 서버(__init__.py)에서도 한 번 더 지운다.
  */
@@ -162,6 +164,37 @@ var UNANSWERED_BANNER = '아직 응답하지 않은 문항이 N개 있습니다.
         });
     }
 
+    /* ---------- 금액을 한국어로 풀어 보여주기 ---------- */
+    function koreanAmount(won) {
+        if (!isFinite(won) || won < 0) return '';
+        if (won === 0) return '0원';
+        var units = [[1e12, '조'], [1e8, '억'], [1e4, '만']];
+        var rest = won;
+        var parts = [];
+        units.forEach(function (u) {
+            var q = Math.floor(rest / u[0]);
+            if (q > 0) {
+                parts.push(q.toLocaleString('ko-KR') + u[1]);
+                rest -= q * u[0];
+            }
+        });
+        if (rest > 0) parts.push(rest.toLocaleString('ko-KR'));
+        return parts.join(' ') + '원';
+    }
+
+    function updateAmounts() {
+        form.querySelectorAll('[data-amount-of]').forEach(function (out) {
+            var input = form.querySelector('[name="' + out.getAttribute('data-amount-of') + '"]');
+            var unit = parseInt(out.getAttribute('data-amount-unit') || '1', 10);
+            if (!input || input.value.trim() === '') {
+                out.textContent = '';
+                return;
+            }
+            var n = parseInt(input.value, 10);
+            out.textContent = isNaN(n) ? '' : '= ' + koreanAmount(n * unit);
+        });
+    }
+
     /* ---------- 합계 표시 ---------- */
     function updateSums() {
         form.querySelectorAll('[data-sum]').forEach(function (out) {
@@ -298,9 +331,13 @@ var UNANSWERED_BANNER = '아직 응답하지 않은 문항이 N개 있습니다.
             }
         }
     });
-    form.addEventListener('input', updateSums);
+    form.addEventListener('input', function () {
+        updateSums();
+        updateAmounts();
+    });
 
     setupDigitsOnly();
     updateConditions();
     updateSums();
+    updateAmounts();
 })();

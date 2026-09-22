@@ -283,3 +283,13 @@
     margin-top: 6px;
     font-weight: 600;
 }
+
+/* 입력한 금액을 한국어로 풀어 보여주는 문구 */
+.amount-preview {
+    display: block;
+    margin-top: 4px;
+    color: var(--survey-green-dark);
+    font-weight: 600;
+    font-size: 0.95rem;
+    min-height: 1.2em;
+}

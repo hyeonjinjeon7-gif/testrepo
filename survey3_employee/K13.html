@@ -16,12 +16,14 @@
         <span class="q-text">K13. 귀댁 가구 전체의 세전 월평균 가구소득</span>
         <p class="q-note">근로소득, 사업소득, 이자, 월세, 투자 이익 등 포함</p>
         <div class="inline-num">{{ form.k13 }} <span>만원</span></div>
+        <span class="amount-preview" data-amount-of="k13" data-amount-unit="10000"></span>
         {{ formfield_errors 'k13' }}
     </div>
 
     <div class="q" data-q>
         <span class="q-text">K13-1. 위 가구소득 중 본인의 노동소득</span>
         <div class="inline-num">{{ form.k13_1 }} <span>만원</span></div>
+        <span class="amount-preview" data-amount-of="k13_1" data-amount-unit="10000"></span>
         {{ formfield_errors 'k13_1' }}
     </div>
 
@@ -29,6 +31,7 @@
     <div class="q" data-q>
         <span class="q-text">K13-2. 위 가구소득 중 배우자의 노동소득 (소득이 없으면 0)</span>
         <div class="inline-num">{{ form.k13_2 }} <span>만원</span></div>
+        <span class="amount-preview" data-amount-of="k13_2" data-amount-unit="10000"></span>
         {{ formfield_errors 'k13_2' }}
     </div>
     {{ endif }}
