@@ -165,20 +165,40 @@ var UNANSWERED_BANNER = '아직 응답하지 않은 문항이 N개 있습니다.
     }
 
     /* ---------- 금액을 한국어로 풀어 보여주기 ---------- */
+    var DIGIT_NAMES = ['', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
+    var PLACE_NAMES = ['', '십', '백', '천'];
+    var GROUP_NAMES = ['', '만', '억', '조'];
+
+    // 0-9999 를 한글로 (1234 -> 천이백삼십사, 10 -> 십, 100 -> 백)
+    function koreanUnder10000(n) {
+        var text = '';
+        for (var place = 3; place >= 0; place--) {
+            var digit = Math.floor(n / Math.pow(10, place)) % 10;
+            if (digit === 0) continue;
+            // 십, 백, 천 앞의 '일'은 읽지 않는다 (일십 x -> 십)
+            text += (digit === 1 && place > 0) ? '' : DIGIT_NAMES[digit];
+            text += PLACE_NAMES[place];
+        }
+        return text;
+    }
+
+    // 1000000 -> 백만원, 120000000 -> 일억 이천만원
     function koreanAmount(won) {
         if (!isFinite(won) || won < 0) return '';
-        if (won === 0) return '0원';
-        var units = [[1e12, '조'], [1e8, '억'], [1e4, '만']];
-        var rest = won;
+        if (won === 0) return '영원';
         var parts = [];
-        units.forEach(function (u) {
-            var q = Math.floor(rest / u[0]);
-            if (q > 0) {
-                parts.push(q.toLocaleString('ko-KR') + u[1]);
-                rest -= q * u[0];
+        var rest = won;
+        for (var g = 3; g >= 0; g--) {
+            var unit = Math.pow(10000, g);
+            var chunk = Math.floor(rest / unit);
+            if (chunk > 0) {
+                var text = koreanUnder10000(chunk);
+                // 만 단위에서만 '일'을 생략한다 (일만원 -> 만원, 일억원은 그대로)
+                if (text === '일' && g === 1) text = '';
+                parts.push(text + GROUP_NAMES[g]);
+                rest -= chunk * unit;
             }
-        });
-        if (rest > 0) parts.push(rest.toLocaleString('ko-KR'));
+        }
         return parts.join(' ') + '원';
     }
 
@@ -191,7 +211,7 @@ var UNANSWERED_BANNER = '아직 응답하지 않은 문항이 N개 있습니다.
                 return;
             }
             var n = parseInt(input.value, 10);
-            out.textContent = isNaN(n) ? '' : '= ' + koreanAmount(n * unit);
+            out.textContent = isNaN(n) ? '' : koreanAmount(n * unit);
         });
     }
 
