@@ -18,6 +18,7 @@
  *   data-exclusive="c5_6"      (체크박스 묶음) 이 보기를 고르면 나머지 해제
  *   data-sum="a5_m_"           이름이 a5_m_ 로 시작하는 숫자 입력칸의 합계를 표시
  *   data-digits                안의 입력칸에 숫자와 '-' 만 입력되게 한다 (휴대전화, 사업자번호 등)
+ *   data-digits="only"         숫자만 입력되게 한다 (금액 등, '-' 도 막음)
  *   data-amount-of="k13"       k13 에 적은 숫자를 한국어 금액으로 풀어서 보여준다
  *   data-amount-unit="10000"   입력 단위를 원으로 환산하는 값 (만원=10000, 백만원=1000000)
  *
@@ -143,9 +144,18 @@ var UNANSWERED_BANNER = '아직 응답하지 않은 문항이 N개 있습니다.
     function setupDigitsOnly() {
         form.querySelectorAll('[data-digits] input').forEach(function (input) {
             input.setAttribute('inputmode', 'numeric');  // 휴대폰에서 숫자 자판이 먼저 열린다
+            var digitsOnly = input.closest('[data-digits]').getAttribute('data-digits') === 'only';
+            var allowed = digitsOnly ? /[^0-9]/g : /[^0-9-]/g;
+
+            // 숫자 입력칸(type=number)은 e, +, . 같은 글자를 value 로 읽을 수 없으므로 입력 자체를 막는다
+            input.addEventListener('beforeinput', function (e) {
+                if (!e.data) return;  // 지우기 등
+                var ok = digitsOnly ? /^[0-9]+$/ : /^[0-9-]+$/;
+                if (!ok.test(e.data)) e.preventDefault();
+            });
 
             function strip() {
-                var cleaned = input.value.replace(/[^0-9-]/g, '');
+                var cleaned = input.value.replace(allowed, '');
                 if (cleaned === input.value) return;
                 var pos = input.selectionStart - (input.value.length - cleaned.length);
                 input.value = cleaned;

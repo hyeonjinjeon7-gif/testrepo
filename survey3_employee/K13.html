@@ -5,7 +5,7 @@
 {{ block content }}
 
 <div class="notice">
-    2025년 기준 세전 월평균 금액을 만원 단위로 적어 주십시오.
+    2025년 기준 세전 월평균 금액을 만원 단위로 적어 주십시오. (1~9999만원)
     정확하지 않아도 대략적인 금액이면 됩니다.
     답하고 싶지 않으시면 맨 아래 <b>"소득 문항에 응답하지 않음"</b>을 선택해 주십시오.
 </div>
@@ -15,14 +15,14 @@
     <div class="q" data-q>
         <span class="q-text">K13. 귀댁 가구 전체의 세전 월평균 가구소득</span>
         <p class="q-note">근로소득, 사업소득, 이자, 월세, 투자 이익 등 포함</p>
-        <div class="inline-num">{{ form.k13 }} <span>만원</span></div>
+        <div class="inline-num" data-digits="only">{{ form.k13 }} <span>만원</span></div>
         <span class="amount-preview" data-amount-of="k13" data-amount-unit="10000"></span>
         {{ formfield_errors 'k13' }}
     </div>
 
     <div class="q" data-q>
         <span class="q-text">K13-1. 위 가구소득 중 본인의 노동소득</span>
-        <div class="inline-num">{{ form.k13_1 }} <span>만원</span></div>
+        <div class="inline-num" data-digits="only">{{ form.k13_1 }} <span>만원</span></div>
         <span class="amount-preview" data-amount-of="k13_1" data-amount-unit="10000"></span>
         {{ formfield_errors 'k13_1' }}
     </div>
@@ -30,7 +30,7 @@
     {{ if 'k13_2' in form }}
     <div class="q" data-q>
         <span class="q-text">K13-2. 위 가구소득 중 배우자의 노동소득 (소득이 없으면 0)</span>
-        <div class="inline-num">{{ form.k13_2 }} <span>만원</span></div>
+        <div class="inline-num" data-digits="only">{{ form.k13_2 }} <span>만원</span></div>
         <span class="amount-preview" data-amount-of="k13_2" data-amount-unit="10000"></span>
         {{ formfield_errors 'k13_2' }}
     </div>
