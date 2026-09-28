@@ -13,10 +13,15 @@ class PlayerBot(Bot):
         attn_pass = self.case == 'attn_pass'
 
         yield SubmissionMustFail(Consent, dict(consent_privacy=1))  # 참여 동의 체크 안 함
+        yield SubmissionMustFail(  # 개인정보 동의 여부를 고르지 않음
+            Consent, dict(consent_participate=True)
+        )
         yield Consent, dict(consent_participate=True, consent_privacy=1)
         expect(self.player.lecture_group, C.GROUP)
 
         yield SubmissionMustFail(A0, dict(a0='테스트회사', a0_1_phone='0101234'))
+        yield SubmissionMustFail(A0, dict(a0_1_phone='010-1234-5678'))  # 회사명 비움
+        yield SubmissionMustFail(A0, dict(a0='테스트회사'))  # 연락처를 둘 다 비움
         yield A0, dict(a0='테스트회사', a0_1_phone='010-1234-5678', a0_1_email='a@b.com')
 
         yield D, dict(d0=1, d1=4, d2=4, d3=5, d4='유연근무 지원금', d5=2, d5_text='지워져야 함')

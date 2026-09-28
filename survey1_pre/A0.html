@@ -10,7 +10,7 @@
     {{ formfield 'a0' }}
 </div>
 
-{{ if player.consent_privacy == 1 }}
+{{ if privacy_ok }}
 {{ comment }}성함/휴대전화/이메일 모두 필수. 칸마다 data-q 를 두어 빠진 칸만 표시되게 한다{{ endcomment }}
 <div class="q">
     <span class="q-text">A0-1. 귀하의 연락처를 남겨 주십시오.</span>

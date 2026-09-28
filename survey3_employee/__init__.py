@@ -94,6 +94,7 @@ class Player(BasePlayer):
             [0, '개인정보 수집 및 이용에 동의하지 않습니다'],
         ],
         widget=widgets.RadioSelect,
+        blank=True,
     )
     consent_sensitive = models.IntegerField(
         label='민감정보 수집 및 이용 동의',
@@ -102,15 +103,17 @@ class Player(BasePlayer):
             [0, '민감정보 수집 및 이용에 동의하지 않습니다 (해당 문항은 표시되지 않습니다)'],
         ],
         widget=widgets.RadioSelect,
+        blank=True,
     )
     consent_followup = models.IntegerField(
         label='후속 연구 연락에 대한 동의 (선택)',
         choices=[[1, '후속 연구 연락에 동의합니다'], [0, '후속 연구 연락에 동의하지 않습니다']],
         widget=widgets.RadioSelect,
+        blank=True,
     )
 
     # ----------------------------------------------------------------- J1. 회사
-    j1 = models.IntegerField(label='재직 중인 회사', choices=company_choices())
+    j1 = models.IntegerField(label='재직 중인 회사', choices=company_choices(), blank=True)
     j1_other = text('회사명 직접 입력')
 
     # ----------------------------------------------------------------- K. 기본 정보
@@ -322,11 +325,11 @@ SENSITIVE_FIELDS = ['k5', 'm2', 'k13', 'k13_1', 'k13_2', 'k13_refuse',
 
 
 def sensitive_ok(player: Player):
-    return player.consent_sensitive == 1
+    return player.field_maybe_none('consent_sensitive') == 1
 
 
 def privacy_ok(player: Player):
-    return player.consent_privacy == 1
+    return player.field_maybe_none('consent_privacy') == 1
 
 
 def has_children(player: Player):
@@ -355,8 +358,16 @@ class Consent(SurveyPage):
 
     @staticmethod
     def error_message(player: Player, values):
+        errors = {}
         if not values['consent_participate']:
-            return dict(consent_participate='설문 참여에 동의하셔야 다음으로 넘어갈 수 있습니다. 위 항목에 체크해 주십시오.')
+            errors['consent_participate'] = (
+                '설문 참여에 동의하셔야 다음으로 넘어갈 수 있습니다. 위 항목에 체크해 주십시오.'
+            )
+        # 동의/비동의 중 하나는 반드시 고르게 한다 (비워 두면 비동의와 구분되지 않는다)
+        for field in ['consent_privacy', 'consent_sensitive', 'consent_followup']:
+            if values.get(field) is None:
+                errors[field] = '동의 여부를 선택해 주십시오.'
+        return errors
 
 
 class J1(SurveyPage):
@@ -369,6 +380,8 @@ class J1(SurveyPage):
 
     @staticmethod
     def error_message(player: Player, values):
+        if values.get('j1') is None:
+            return dict(j1='재직 중인 회사를 선택해 주십시오.')
         if values['j1'] == C.COMPANY_NOT_LISTED and not values.get('j1_other'):
             return dict(j1_other='재직 중인 회사명을 적어 주십시오.')
 
@@ -465,7 +478,7 @@ class L1(SurveyPage):
         if player.field_maybe_none('l2') != 2:
             clear_checkboxes(player, L3_FIELDS)
             player.l3_other = None
-        elif not player.l3_10:
+        elif not player.field_maybe_none('l3_10'):
             player.l3_other = None
 
 

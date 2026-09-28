@@ -93,10 +93,11 @@ class Player(BasePlayer):
             [0, '개인정보 수집 및 이용에 동의하지 않습니다 (설문 연결과 사례 지급이 불가능합니다)'],
         ],
         widget=widgets.RadioSelect,
+        blank=True,
     )
 
     # ----------------------------------------------------------------- A0
-    a0 = models.StringField(label='회사명')
+    a0 = models.StringField(label='회사명', blank=True)
     a0_1_phone = text('휴대전화')
     a0_1_email = text('이메일')
 
@@ -289,8 +290,16 @@ class Consent(SurveyPage):
 
     @staticmethod
     def error_message(player: Player, values):
+        errors = {}
         if not values['consent_participate']:
-            return dict(consent_participate='설문 참여에 동의하셔야 다음으로 넘어갈 수 있습니다. 위 항목에 체크해 주십시오.')
+            errors['consent_participate'] = (
+                '설문 참여에 동의하셔야 다음으로 넘어갈 수 있습니다. 위 항목에 체크해 주십시오.'
+            )
+        # 동의/비동의 중 하나는 반드시 고르게 한다 (비워 두면 비동의와 구분되지 않는다)
+        for field in ['consent_privacy']:
+            if values.get(field) is None:
+                errors[field] = '동의 여부를 선택해 주십시오.'
+        return errors
 
 class A0(SurveyPage):
     form_model = 'player'
@@ -298,7 +307,12 @@ class A0(SurveyPage):
 
     @staticmethod
     def error_message(player: Player, values):
-        return phone_email_errors(values, 'a0_1_phone', 'a0_1_email')
+        errors = phone_email_errors(values, 'a0_1_phone', 'a0_1_email')
+        if not (values.get('a0') or '').strip():
+            errors['a0'] = '회사명을 적어 주십시오.'
+        if not (values.get('a0_1_phone') or '').strip() and not (values.get('a0_1_email') or '').strip():
+            errors['a0_1_phone'] = '휴대전화 또는 이메일 중 하나 이상을 적어 주십시오.'
+        return errors
 
 
 class D(SurveyPage):
@@ -458,7 +472,7 @@ class End(SurveyPage):
     @staticmethod
     def vars_for_template(player: Player):
         player.finished = True
-        return {}
+        return dict(privacy_ok=player.field_maybe_none('consent_privacy') == 1)
 
 
 page_sequence = [Consent, A0, D, E12, E34, E56, F, G, H, I, V, W, End]

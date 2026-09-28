@@ -140,15 +140,17 @@ class Player(BasePlayer):
         label='개인정보 수집 및 이용 동의',
         choices=[[1, '개인정보 수집 및 이용에 동의합니다'], [0, '개인정보 수집 및 이용에 동의하지 않습니다']],
         widget=widgets.RadioSelect,
+        blank=True,
     )
     consent_followup = models.IntegerField(
         label='후속 연구 연락 동의 (선택)',
         choices=[[1, '후속 연구 연락에 동의합니다'], [0, '후속 연구 연락에 동의하지 않습니다']],
         widget=widgets.RadioSelect,
+        blank=True,
     )
 
     # ----------------------------------------------------------------- A. 기업 기본정보
-    a0 = models.StringField(label='회사명')
+    a0 = models.StringField(label='회사명', blank=True)
     a0_1_name = text('성함')
     a0_1_phone = text('휴대전화')
     a0_1_email = text('이메일')
@@ -507,6 +509,11 @@ def b8_shown(player: Player):
     )
 
 
+def privacy_ok(player: Player):
+    """개인정보 수집에 동의했는지 (비워 둔 경우에도 안전하게 읽는다)"""
+    return player.field_maybe_none('consent_privacy') == 1
+
+
 def clear_other(player: Player, choice_field, other_field, other_value):
     """'기타'를 고르지 않았는데 기타 입력란에 값이 남아 있으면 지운다."""
     if player.field_maybe_none(choice_field) != other_value:
@@ -545,8 +552,16 @@ class Consent(SurveyPage):
 
     @staticmethod
     def error_message(player: Player, values):
+        errors = {}
         if not values['consent_participate']:
-            return dict(consent_participate='설문 참여에 동의하셔야 다음으로 넘어갈 수 있습니다. 위 항목에 체크해 주십시오.')
+            errors['consent_participate'] = (
+                '설문 참여에 동의하셔야 다음으로 넘어갈 수 있습니다. 위 항목에 체크해 주십시오.'
+            )
+        # 동의/비동의 중 하나는 반드시 고르게 한다 (비워 두면 비동의와 구분되지 않는다)
+        for field in ['consent_privacy', 'consent_followup']:
+            if values.get(field) is None:
+                errors[field] = '동의 여부를 선택해 주십시오.'
+        return errors
 
 
 class A0(SurveyPage):
@@ -555,16 +570,20 @@ class A0(SurveyPage):
     @staticmethod
     def get_form_fields(player: Player):
         # 개인정보 동의 = 동의함일 때만 연락처 문항 표시
-        if player.consent_privacy == 1:
+        if privacy_ok(player):
             return ['a0', 'a0_1_name', 'a0_1_phone', 'a0_1_email']
         return ['a0']
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        return dict(privacy_ok=privacy_ok(player))
 
     @staticmethod
     def error_message(player: Player, values):
         errors = {}
         if not (values.get('a0') or '').strip():
             errors['a0'] = '회사명을 적어 주십시오.'
-        if player.consent_privacy == 1:
+        if privacy_ok(player):
             # 상품권 발송과 설문 연결에 필요하므로 성함/휴대전화/이메일을 모두 받는다
             required = [
                 ('a0_1_name', '성함을 적어 주십시오.'),
@@ -612,7 +631,7 @@ class A1(SurveyPage):
         # 대표이사/CEO 와 "기타"(주관식) 에게는 담당 업무를 묻지 않는다
         if player.field_maybe_none('a1') in (C.CEO, C.POSITION_OTHER):
             clear_checkboxes(player, A1_1_FIELDS)
-        if not player.a1_1_7:
+        if not player.field_maybe_none('a1_1_7'):
             player.a1_1_other = None
 
 
@@ -739,7 +758,7 @@ class B9(SurveyPage):
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
         player.attn_fail_pre = player.field_maybe_none('b9_attn') != C.ATTN_CORRECT
-        if not player.b10_14:
+        if not player.field_maybe_none('b10_14'):
             player.b10_other = None
 
 
@@ -822,9 +841,9 @@ class C5(SurveyPage):
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
-        if not player.c5_5:
+        if not player.field_maybe_none('c5_5'):
             player.c5_other = None
-        if not player.c8_12:
+        if not player.field_maybe_none('c8_12'):
             player.c8_other = None
 
 
@@ -861,7 +880,7 @@ class End(SurveyPage):
     @staticmethod
     def vars_for_template(player: Player):
         player.finished = True
-        return {}
+        return dict(privacy_ok=privacy_ok(player))
 
 
 page_sequence = (

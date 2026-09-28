@@ -17,6 +17,9 @@ class PlayerBot(Bot):
         yield SubmissionMustFail(
             Consent, dict(consent_privacy=1, consent_sensitive=1, consent_followup=1)
         )
+        yield SubmissionMustFail(  # 세 동의 문항 중 하나라도 비우면 넘어갈 수 없다
+            Consent, dict(consent_participate=True, consent_privacy=1, consent_sensitive=1)
+        )
         yield Consent, dict(
             consent_participate=True,
             consent_privacy=agree,
@@ -24,6 +27,7 @@ class PlayerBot(Bot):
             consent_followup=1,
         )
 
+        yield SubmissionMustFail(J1, dict())  # 회사를 고르지 않음
         yield SubmissionMustFail(J1, dict(j1=C.COMPANY_NOT_LISTED))  # 직접 입력 비움
         if parent:
             yield J1, dict(j1=1, j1_other='지워져야 함')

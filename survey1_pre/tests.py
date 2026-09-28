@@ -19,6 +19,12 @@ class PlayerBot(Bot):
             Consent,
             dict(consent_privacy=1, consent_followup=1),  # 참여 동의 체크 안 함
         )
+        yield SubmissionMustFail(  # 개인정보 동의 여부를 고르지 않음
+            Consent, dict(consent_participate=True, consent_followup=1)
+        )
+        yield SubmissionMustFail(  # 후속 연구 연락 동의 여부를 고르지 않음
+            Consent, dict(consent_participate=True, consent_privacy=1)
+        )
         yield Consent, dict(consent_participate=True, consent_privacy=agree, consent_followup=1)
 
         # ---- A
