@@ -28,7 +28,7 @@
         <span>N4. 앞으로 3년 이내에 자녀를 가질(또는 더 가질) 가능성 (0 전혀 없음 ~ 100 매우 높음)</span>
         <div class="num-0-100" data-show-if-blank="n4_refuse">{{ form.n4 }}</div>
         {{ formfield_errors 'n4' }}
-        <div class="form-check">
+        <div class="form-check" data-q-optional>
             {{ form.n4_refuse }}
             <label class="form-check-label" for="{{ form.n4_refuse.id }}">응답하지 않음</label>
         </div>

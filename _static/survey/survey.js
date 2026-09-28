@@ -243,10 +243,11 @@ var UNANSWERED_BANNER = '아직 응답하지 않은 문항이 N개 있습니다.
 
     /* ---------- 필수 응답 확인 (Qualtrics의 Force Response) ---------- */
     function visibleInputs(unit, selector) {
-        // 조건에 따라 숨겨진 입력칸은 응답 확인에서 빼야 한다
+        // 숨겨진 입력칸과 data-q-optional 안의 입력칸은 응답 확인에서 뺀다
+        // (예: "응답하지 않음" 체크박스는 체크하지 않아도 미응답으로 세지 않는다)
         var found = [];
         unit.querySelectorAll(selector).forEach(function (el) {
-            if (isVisible(el)) found.push(el);
+            if (isVisible(el) && !el.closest('[data-q-optional]')) found.push(el);
         });
         return found;
     }
@@ -257,12 +258,10 @@ var UNANSWERED_BANNER = '아직 응답하지 않은 문항이 N개 있습니다.
 
         var boxes = visibleInputs(unit, 'input[type=checkbox]');
         if (boxes.length && !boxes.some(function (b) { return b.checked; })) return false;
-        var texts = [];
-        unit.querySelectorAll(
+        var texts = visibleInputs(
+            unit,
             'input[type=text], input[type=number], input[type=email], input[type=tel], select, textarea'
-        ).forEach(function (t) {
-            if (isVisible(t) && !t.closest('[data-q-optional]')) texts.push(t);
-        });
+        );
         if (texts.length === 0) return true;
 
         var filled = texts.filter(function (t) { return t.value.trim() !== ''; });
