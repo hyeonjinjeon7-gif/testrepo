@@ -90,6 +90,14 @@
     max-width: 160px;
 }
 
+/* 회사 목록처럼 보기 글자가 긴 드롭다운. 기본값은 가장 긴 보기에 맞춰 늘어나므로
+   회사명이 길면 휴대폰 화면 밖으로 나간다. 화면 폭을 넘지 않게 묶어 둔다 */
+select.form-control,
+select.form-select {
+    max-width: 100%;
+    text-overflow: ellipsis;
+}
+
 /* 안내문, 동의서 */
 .notice {
     background: var(--survey-green-bg);
