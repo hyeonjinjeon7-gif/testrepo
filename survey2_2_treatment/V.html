@@ -33,8 +33,8 @@
     <span class="q-text">V3. 3년 전(2022년 말) 귀사(현 소속)의 전체 직원 수는 몇 명이었습니까?</span>
     <p class="q-note">대표 제외, 당시 창업 전이면 0</p>
     <div class="inline-num">
-        <span>정규직</span> {{ form.v3_regular }} <span>명</span>
-        <span>비정규직</span> {{ form.v3_nonregular }} <span>명</span>
+        <span class="num-item"><span>정규직</span> {{ form.v3_regular }} <span>명</span></span>
+        <span class="num-item"><span>비정규직</span> {{ form.v3_nonregular }} <span>명</span></span>
     </div>
     {{ formfield_errors 'v3_regular' }}
     {{ formfield_errors 'v3_nonregular' }}

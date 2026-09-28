@@ -4,11 +4,14 @@
 
 {{ block styles }}
 <style>
-    .a5-table { width: 100%; border-collapse: collapse; }
-    .a5-table th, .a5-table td { border-bottom: 1px solid #e3e6ea; padding: 6px 4px; text-align: center; }
-    .a5-table thead th { background: #f1f4f8; font-size: 0.85rem; }
-    .a5-table .form-control { width: 100%; min-width: 58px; padding: 4px 6px; text-align: right; }
-    .a5-wrap { overflow-x: auto; }
+    {{ comment }}휴대폰 화면(폭 360px 안팎)에 맞추려고 연령을 행, 성별을 열로 놓았다.
+    세로로 세우면 열이 3개뿐이라 가로 스크롤 없이 들어간다.{{ endcomment }}
+    .a5-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    .a5-table th, .a5-table td { border-bottom: 1px solid #e3e6ea; padding: 7px 4px; text-align: center; }
+    .a5-table thead th { background: #f1f4f8; font-size: 0.9rem; }
+    .a5-table tbody th { text-align: left; white-space: nowrap; font-weight: 600; padding-left: 2px; }
+    .a5-table .form-control { width: 100%; min-width: 0; padding: 5px 6px; text-align: right; }
+    .a5-table .a5-total th, .a5-table .a5-total td { background: #f7f9fc; font-weight: 700; border-bottom: none; }
 </style>
 {{ endblock }}
 
@@ -16,28 +19,22 @@
 
 <div class="q">
     <span class="q-text">A5. 귀사(현 소속) 근로자의 성별, 연령 구성을 적어 주십시오.</span>
-    <p class="q-note">비정규직 포함, 대략적인 인원 (단위: 명). 계는 자동으로 계산됩니다.</p>
-    <div class="a5-wrap">
+    <p class="q-note">비정규직 포함, 대략적인 인원 (단위: 명). 해당 인원이 없으면 0을 적어 주십시오.
+        계는 자동으로 계산됩니다.</p>
     <table class="a5-table">
+        <colgroup><col style="width: 36%"><col style="width: 32%"><col style="width: 32%"></colgroup>
         <thead>
-        <tr><th>성별</th><th>29세 이하</th><th>30대</th><th>40대</th><th>50대</th><th>60세 이상</th><th>계</th></tr>
+        <tr><th>연령</th><th>남성</th><th>여성</th></tr>
         </thead>
         <tbody>
-        <tr data-q>
-            <th>남성</th>
-            <td>{{ form.a5_m_20s }}</td><td>{{ form.a5_m_30s }}</td><td>{{ form.a5_m_40s }}</td>
-            <td>{{ form.a5_m_50s }}</td><td>{{ form.a5_m_60s }}</td>
-            <td><b data-sum="a5_m_">-</b></td>
-        </tr>
-        <tr data-q>
-            <th>여성</th>
-            <td>{{ form.a5_f_20s }}</td><td>{{ form.a5_f_30s }}</td><td>{{ form.a5_f_40s }}</td>
-            <td>{{ form.a5_f_50s }}</td><td>{{ form.a5_f_60s }}</td>
-            <td><b data-sum="a5_f_">-</b></td>
-        </tr>
+        <tr data-q><th>29세 이하</th><td>{{ form.a5_m_20s }}</td><td>{{ form.a5_f_20s }}</td></tr>
+        <tr data-q><th>30대</th><td>{{ form.a5_m_30s }}</td><td>{{ form.a5_f_30s }}</td></tr>
+        <tr data-q><th>40대</th><td>{{ form.a5_m_40s }}</td><td>{{ form.a5_f_40s }}</td></tr>
+        <tr data-q><th>50대</th><td>{{ form.a5_m_50s }}</td><td>{{ form.a5_f_50s }}</td></tr>
+        <tr data-q><th>60세 이상</th><td>{{ form.a5_m_60s }}</td><td>{{ form.a5_f_60s }}</td></tr>
+        <tr class="a5-total"><th>계</th><td><b data-sum="a5_m_">-</b></td><td><b data-sum="a5_f_">-</b></td></tr>
         </tbody>
     </table>
-    </div>
     {{ for field in form }}{{ if field.errors and field.name.startswith('a5_') }}
     <div class="form-control-errors">{{ for e in field.errors }}{{ e }} {{ endfor }}</div>
     {{ endif }}{{ endfor }}

@@ -31,8 +31,8 @@
 <div class="q" data-q>
     <span class="q-text">A4. 귀사(현 소속)의 전체 직원 수는 몇 명입니까? (대표 제외)</span>
     <div class="inline-num">
-        <span>정규직</span> {{ form.a4_regular }} <span>명</span>
-        <span>비정규직</span> {{ form.a4_nonregular }} <span>명</span>
+        <span class="num-item"><span>정규직</span> {{ form.a4_regular }} <span>명</span></span>
+        <span class="num-item"><span>비정규직</span> {{ form.a4_nonregular }} <span>명</span></span>
     </div>
     {{ formfield_errors 'a4_regular' }}
     {{ formfield_errors 'a4_nonregular' }}

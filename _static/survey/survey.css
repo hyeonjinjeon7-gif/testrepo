@@ -75,6 +75,17 @@
     display: inline-block;
 }
 
+/* 라벨 + 입력칸 + 단위 한 묶음. 좁은 화면에서 줄이 바뀌어도 라벨이 입력칸과 떨어지지 않는다 */
+.inline-num .num-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.inline-num .num-item .form-control {
+    width: 100px;
+}
+
 .num-0-100 {
     max-width: 160px;
 }
