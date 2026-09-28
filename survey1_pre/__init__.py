@@ -562,6 +562,18 @@ class A0(SurveyPage):
     @staticmethod
     def error_message(player: Player, values):
         errors = {}
+        if not (values.get('a0') or '').strip():
+            errors['a0'] = '회사명을 적어 주십시오.'
+        if player.consent_privacy == 1:
+            # 상품권 발송과 설문 연결에 필요하므로 성함/휴대전화/이메일을 모두 받는다
+            required = [
+                ('a0_1_name', '성함을 적어 주십시오.'),
+                ('a0_1_phone', '휴대전화 번호를 적어 주십시오.'),
+                ('a0_1_email', '이메일 주소를 적어 주십시오.'),
+            ]
+            for field, message in required:
+                if not (values.get(field) or '').strip():
+                    errors[field] = message
         if values.get('a0_1_phone') and not is_valid_phone(values['a0_1_phone']):
             errors['a0_1_phone'] = '휴대전화 번호를 확인해 주십시오. (예: 010-1234-5678)'
         if values.get('a0_1_email') and not is_valid_email(values['a0_1_email']):

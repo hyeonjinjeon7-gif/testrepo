@@ -24,10 +24,17 @@ class PlayerBot(Bot):
         # ---- A
         if case == 'full':
             yield SubmissionMustFail(A0, dict(a0='테스트회사', a0_1_phone='123', a0_1_email='x'))
+            yield SubmissionMustFail(  # 이메일도 필수
+                A0, dict(a0='테스트회사', a0_1_name='홍길동', a0_1_phone='010-1234-5678')
+            )
+            yield SubmissionMustFail(  # 회사명도 필수
+                A0, dict(a0_1_name='홍길동', a0_1_phone='010-1234-5678', a0_1_email='a@b.com')
+            )
             yield A0, dict(
                 a0='테스트회사', a0_1_name='홍길동', a0_1_phone='010-1234-5678', a0_1_email='a@b.com'
             )
         else:
+            yield SubmissionMustFail(A0, dict())  # 회사명은 항상 필수
             yield A0, dict(a0='테스트회사2')
 
         if case == 'full':
