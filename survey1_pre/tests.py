@@ -30,9 +30,20 @@ class PlayerBot(Bot):
         else:
             yield A0, dict(a0='테스트회사2')
 
-        yield A1, dict(a1=5, a1_other='팀장', a2=1, a2_other='지워져야 함', a3=2001, a4_regular=30, a4_nonregular=5)
+        if case == 'full':
+            # 대표가 아닌 응답자 -> A1-1(담당 직무)에 응답
+            yield A1, dict(a1=5, a1_other='팀장', a1_1=7, a1_1_other='기획',
+                           a2=1, a2_other='지워져야 함', a3=2001,
+                           a4_regular=30, a4_nonregular=5)
+            expect(self.player.a1_1, 7)
+            expect(self.player.a1_1_other, '기획')
+        else:
+            # 대표이사/CEO -> A1-1은 묻지 않으므로 값이 남지 않는다
+            yield A1, dict(a1=C.CEO, a1_1=3, a1_other='지워져야 함',
+                           a2=1, a2_other='지워져야 함', a3=2001,
+                           a4_regular=30, a4_nonregular=5)
+            expect(self.player.field_maybe_none('a1_1'), None)
         expect(self.player.field_maybe_none('a2_other'), None)
-        expect(self.player.a1_other, '팀장')
 
         yield A5, dict(a5_m_20s=3, a5_m_30s=4, a5_f_20s=2, a6=1, a7=2)
         expect(self.player.a5_m_total, 7)

@@ -2,7 +2,7 @@ import random
 
 from otree.api import *
 
-from survey_common import other_text_errors
+from survey_common import clear_fields, other_text_errors
 
 
 doc = """
@@ -76,6 +76,7 @@ class C(BaseConstants):
     B2_NONE = 3  # B2 "없음"
     B7_DONT_KNOW = 4  # B7 "모른다"
     ATTN_CORRECT = 3  # B9 attention check 정답 "영향 없음"
+    CEO = 1  # A1 "대표이사/CEO" (이 경우 A1-1 담당 직무는 묻지 않는다)
 
     B8_CHANNELS = [
         [1, '정부기관 홈페이지 (고용24 등)'],
@@ -154,6 +155,19 @@ class Player(BasePlayer):
         [[1, '대표이사/CEO'], [2, '임원'], [3, '인사/노무 담당 관리자'], [4, '기타 관리자'], [5, '기타']],
     )
     a1_other = text('기타 (직접 입력)')
+    a1_1 = radio(  # A1에서 대표이사/CEO 외를 고른 경우에만 표시
+        'A1-1. 현재 담당하고 계신 주요 업무는 무엇입니까?',
+        [
+            [1, '인사/노무'],
+            [2, '총무/경영지원'],
+            [3, '재무/회계'],
+            [4, '영업/마케팅'],
+            [5, '생산/현장 관리'],
+            [6, '연구개발'],
+            [7, '기타'],
+        ],
+    )
+    a1_1_other = text('기타 (직접 입력)')
     a2 = radio(
         'A2. 귀사(현 소속)의 업종은 무엇입니까?',
         [
@@ -555,12 +569,19 @@ class A0(SurveyPage):
 
 class A1(SurveyPage):
     form_model = 'player'
-    form_fields = ['a1', 'a1_other', 'a2', 'a2_other', 'a3', 'a4_regular', 'a4_nonregular']
+    form_fields = [
+        'a1', 'a1_other', 'a1_1', 'a1_1_other',
+        'a2', 'a2_other', 'a3', 'a4_regular', 'a4_nonregular',
+    ]
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
         clear_other(player, 'a1', 'a1_other', 5)
         clear_other(player, 'a2', 'a2_other', 9)
+        # 대표이사/CEO 는 담당 직무를 묻지 않는다
+        if player.field_maybe_none('a1') == C.CEO:
+            clear_fields(player, ['a1_1', 'a1_1_other'])
+        clear_other(player, 'a1_1', 'a1_1_other', 7)
 
 
 class A5(SurveyPage):
