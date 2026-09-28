@@ -2,7 +2,7 @@ import random
 
 from otree.api import *
 
-from survey_common import clear_fields, other_text_errors
+from survey_common import clear_checkboxes, other_text_errors
 
 
 doc = """
@@ -76,7 +76,7 @@ class C(BaseConstants):
     B2_NONE = 3  # B2 "없음"
     B7_DONT_KNOW = 4  # B7 "모른다"
     ATTN_CORRECT = 3  # B9 attention check 정답 "영향 없음"
-    CEO = 1  # A1 "대표이사/CEO" (이 경우 A1-1 담당 직무는 묻지 않는다)
+    CEO = 1  # A1 "대표이사/CEO" (이 경우 A1-1 담당 업무는 묻지 않는다)
 
     B8_CHANNELS = [
         [1, '정부기관 홈페이지 (고용24 등)'],
@@ -155,18 +155,16 @@ class Player(BasePlayer):
         [[1, '대표이사/CEO'], [2, '임원'], [3, '인사/노무 담당 관리자'], [4, '기타 관리자'], [5, '기타']],
     )
     a1_other = text('기타 (직접 입력)')
-    a1_1 = radio(  # A1에서 대표이사/CEO 외를 고른 경우에만 표시
-        'A1-1. 현재 담당하고 계신 주요 업무는 무엇입니까?',
-        [
-            [1, '인사/노무'],
-            [2, '총무/경영지원'],
-            [3, '재무/회계'],
-            [4, '영업/마케팅'],
-            [5, '생산/현장 관리'],
-            [6, '연구개발'],
-            [7, '기타'],
-        ],
-    )
+    # A1-1 담당 업무 (복수 선택, 최대 2개)
+    # A1에서 대표이사/CEO 외를 고른 경우에만 표시. 중소기업에서는 한 사람이
+    # 여러 업무를 겸하는 경우가 많아 복수 선택으로 묻는다.
+    a1_1_1 = check('인사/노무')
+    a1_1_2 = check('총무/경영지원')
+    a1_1_3 = check('재무/회계')
+    a1_1_4 = check('영업/마케팅')
+    a1_1_5 = check('생산/현장 관리')
+    a1_1_6 = check('연구개발')
+    a1_1_7 = check('기타')
     a1_1_other = text('기타 (직접 입력)')
     a2 = radio(
         'A2. 귀사(현 소속)의 업종은 무엇입니까?',
@@ -448,6 +446,7 @@ def creating_session(subsession: Subsession):
 # ---------------------------------------------------------------------------
 # 공통 함수
 # ---------------------------------------------------------------------------
+A1_1_FIELDS = ['a1_1_{}'.format(i) for i in range(1, 8)]
 B1_FIELDS = ['b1_{}'.format(i) for i in range(1, 11)]
 B2_FIELDS = ['b2_{}'.format(i) for i in range(1, 11)]
 B3_FIELDS = ['b3_{}'.format(i) for i in range(1, 11)]
@@ -569,19 +568,37 @@ class A0(SurveyPage):
 
 class A1(SurveyPage):
     form_model = 'player'
-    form_fields = [
-        'a1', 'a1_other', 'a1_1', 'a1_1_other',
-        'a2', 'a2_other', 'a3', 'a4_regular', 'a4_nonregular',
-    ]
+    form_fields = (
+        ['a1', 'a1_other']
+        + A1_1_FIELDS
+        + ['a1_1_other', 'a2', 'a2_other', 'a3', 'a4_regular', 'a4_nonregular']
+    )
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        return dict(a1_1=checkboxes(A1_1_FIELDS, max_n=2))
+
+    @staticmethod
+    def error_message(player: Player, values):
+        if values.get('a1') == C.CEO:  # 대표이사/CEO 에게는 보이지 않는 문항
+            return
+        errors = other_text_errors(values, [('a1_1_7', 'a1_1_other')])
+        checked = count_checked(values, A1_1_FIELDS)
+        if checked == 0:
+            errors['a1_1_1'] = '담당 업무를 선택해 주십시오.'
+        elif checked > 2:
+            errors['a1_1_1'] = '최대 2개까지 선택해 주십시오.'
+        return errors
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
         clear_other(player, 'a1', 'a1_other', 5)
         clear_other(player, 'a2', 'a2_other', 9)
-        # 대표이사/CEO 는 담당 직무를 묻지 않는다
+        # 대표이사/CEO 는 담당 업무를 묻지 않는다
         if player.field_maybe_none('a1') == C.CEO:
-            clear_fields(player, ['a1_1', 'a1_1_other'])
-        clear_other(player, 'a1_1', 'a1_1_other', 7)
+            clear_checkboxes(player, A1_1_FIELDS)
+        if not player.a1_1_7:
+            player.a1_1_other = None
 
 
 class A5(SurveyPage):

@@ -9,10 +9,12 @@
     <div class="sub-input" data-show-if="a1=5">{{ formfield 'a1_other' }}</div>
 </div>
 
-{{ comment }}대표이사/CEO(①) 외를 고른 경우에만 담당 직무를 묻는다{{ endcomment }}
-<div class="q" data-q data-show-if="a1=2,3,4,5">
-    {{ formfield 'a1_1' }}
-    <div class="sub-input" data-q data-show-if="a1_1=7">{{ formfield 'a1_1_other' }}</div>
+{{ comment }}대표이사/CEO(①) 외를 고른 경우에만 담당 업무를 묻는다{{ endcomment }}
+<div class="q" data-show-if="a1=2,3,4,5">
+    <span class="q-text">A1-1. 현재 담당하고 계신 주요 업무는 무엇입니까? (해당하는 것 모두, 최대 2개)</span>
+    {{ formfield_errors 'a1_1_1' }}
+    {{ with cb=a1_1 }}{{ include 'global/_checkboxes.html' }}{{ endwith }}
+    <div class="sub-input" data-q data-show-if="a1_1_7=y">{{ formfield 'a1_1_other' }}</div>
 </div>
 
 <div class="q" data-q>

@@ -31,18 +31,26 @@ class PlayerBot(Bot):
             yield A0, dict(a0='테스트회사2')
 
         if case == 'full':
-            # 대표가 아닌 응답자 -> A1-1(담당 직무)에 응답
-            yield A1, dict(a1=5, a1_other='팀장', a1_1=7, a1_1_other='기획',
-                           a2=1, a2_other='지워져야 함', a3=2001,
-                           a4_regular=30, a4_nonregular=5)
-            expect(self.player.a1_1, 7)
+            # 대표가 아닌 응답자 -> A1-1(담당 업무)에 응답 (복수 선택, 최대 2개)
+            base = dict(a1=5, a1_other='팀장', a2=1, a2_other='지워져야 함',
+                        a3=2001, a4_regular=30, a4_nonregular=5)
+            yield SubmissionMustFail(A1, base)  # 담당 업무를 고르지 않음
+            yield SubmissionMustFail(
+                A1, dict(base, a1_1_1=True, a1_1_2=True, a1_1_3=True)
+            )  # 최대 2개
+            yield SubmissionMustFail(
+                A1, dict(base, a1_1_7=True)
+            )  # "기타"만 고르고 내용 비움
+            yield A1, dict(base, a1_1_1=True, a1_1_7=True, a1_1_other='기획')
+            expect(self.player.a1_1_1, True)
+            expect(self.player.a1_1_2, False)
             expect(self.player.a1_1_other, '기획')
         else:
             # 대표이사/CEO -> A1-1은 묻지 않으므로 값이 남지 않는다
-            yield A1, dict(a1=C.CEO, a1_1=3, a1_other='지워져야 함',
+            yield A1, dict(a1=C.CEO, a1_1_3=True, a1_other='지워져야 함',
                            a2=1, a2_other='지워져야 함', a3=2001,
                            a4_regular=30, a4_nonregular=5)
-            expect(self.player.field_maybe_none('a1_1'), None)
+            expect(self.player.a1_1_3, False)
         expect(self.player.field_maybe_none('a2_other'), None)
 
         yield A5, dict(a5_m_20s=3, a5_m_30s=4, a5_f_20s=2, a6=1, a7=2)
