@@ -49,16 +49,37 @@ class PlayerBot(Bot):
         expect(self.player.field_maybe_none('g3_items'), None)
 
         yield SubmissionMustFail(H, dict(h1=1, h3_name='김담당', h3_email='잘못된주소'))
-        yield H, dict(h1=1, h2=20, h3_name='김담당', h3_title='총무팀장', h3_email='staff@example.com')
-        expect(self.player.field_maybe_none('h1_1'), None)
+        if attn_pass:
+            yield H, dict(h1=1, h2=20, h3_name='김담당', h3_title='총무팀장',
+                          h3_email='staff@example.com')
+            expect(self.player.field_maybe_none('h1_1'), None)
+        else:
+            # H1 = ③ (담당 직원을 정하기 어렵다) -> H1-1 이 이어서 나온다
+            yield H, dict(h1=3, h1_1=1, h2=20, h3_name='김담당', h3_title='총무팀장',
+                          h3_email='staff@example.com')
+            expect(self.player.h1_1, 1)
 
         yield I, dict(i1=1, a8_consent=0, a8_biz_no='1234567890')
         expect(self.player.field_maybe_none('a8_biz_no'), None)
 
-        yield V, dict(
-            v1=1500, v2_1=2, v3_regular=20, v3_nonregular=3, v4=42, v5=30, v6=40, v7=100, v8=2
-        )
-        expect(self.player.field_maybe_none('v1_1'), None)
+        if attn_pass:
+            yield V, dict(
+                v1=1500, v2_1=2, v3_regular=20, v3_nonregular=3, v4=42, v5=30, v6=40,
+                v7=100, v8=2
+            )
+            expect(self.player.field_maybe_none('v1_1'), None)
+        else:
+            # 매출액을 모르면 V1 을 비우고 구간(V1-1)으로 답한다
+            yield V, dict(
+                v1_1=3, v2_1=2, v3_regular=20, v3_nonregular=3, v4=42, v5=30, v6=40,
+                v7=100, v8=2
+            )
+            expect(self.player.v1_1, 3)
+            expect(self.player.field_maybe_none('v1'), None)
 
-        yield W, dict(w1=1, w2=50, w3=3, w4=2, w5=1, w5_1=2, w6=1)
-        expect(self.player.field_maybe_none('w5_1'), None)
+        if attn_pass:
+            yield W, dict(w1=1, w2=50, w3=3, w4=2, w5=1, w5_1=2, w6=1)
+            expect(self.player.field_maybe_none('w5_1'), None)
+        else:
+            yield W, dict(w1=2, w2=38, w3=4, w4=2, w5=2, w5_1=2, w6=3)
+            expect(self.player.w5_1, 2)

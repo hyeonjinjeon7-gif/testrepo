@@ -5,14 +5,16 @@ from . import *
 # 실행: otree test survey1_pre
 #   case 'full'      : 모든 문항 응답, attention check 통과
 #   case 'dont_know' : B1을 모두 "모른다" -> B2 생략, B3 표 숨김 / 개인정보 비동의 -> 연락처 문항 숨김
+#   case 'mixed'     : B1을 반만 "모른다" -> B2, B3 에 일부 행만 나오는지 확인
 
 
 class PlayerBot(Bot):
-    cases = ['full', 'dont_know']
+    cases = ['full', 'dont_know', 'mixed']
 
     def play_round(self):
         case = self.case
-        agree = 1 if case == 'full' else 0
+        knows = case != 'dont_know'   # B 블록 제도를 알고 있는가
+        agree = 1 if knows else 0
 
         # ---- 동의
         yield SubmissionMustFail(
@@ -28,7 +30,7 @@ class PlayerBot(Bot):
         yield Consent, dict(consent_participate=True, consent_privacy=agree, consent_followup=1)
 
         # ---- A
-        if case == 'full':
+        if knows:
             yield SubmissionMustFail(A0, dict(a0='테스트회사', a0_1_phone='123', a0_1_email='x'))
             yield SubmissionMustFail(  # 이메일도 필수
                 A0, dict(a0='테스트회사', a0_1_name='홍길동', a0_1_phone='010-1234-5678')
@@ -43,7 +45,7 @@ class PlayerBot(Bot):
             yield SubmissionMustFail(A0, dict())  # 회사명은 항상 필수
             yield A0, dict(a0='테스트회사2')
 
-        if case == 'full':
+        if knows:
             # 대표가 아닌 응답자 -> A1-1(담당 업무)에 응답 (복수 선택, 최대 2개)
             base = dict(a1=4, a1_other='지워져야 함', a2=1, a2_other='지워져야 함',
                         a3=2001, a4_regular=30, a4_nonregular=5)
@@ -72,15 +74,29 @@ class PlayerBot(Bot):
         expect(self.player.a5_f_total, 2)
 
         def b_block():
-            b1_value = 1 if case == 'full' else C.B1_DONT_KNOW
-            yield B_page('B1'), {f: b1_value for f in B1_FIELDS}
-            if case == 'full':
+            if case == 'mixed':
+                # 홀수 번째 제도만 알고 있다 -> B2 에 그 5개만 나온다
+                b1 = {f: (1 if i % 2 == 0 else C.B1_DONT_KNOW)
+                      for i, f in enumerate(B1_FIELDS)}
+                yield B_page('B1'), b1
+                rows = b2_rows(self.player)
+                expect(rows, B2_FIELDS[::2])
+                # 그중 다시 절반만 "없음" 이 아니어서 B3 에 남는다
+                b2 = {f: (C.B2_NONE if i % 2 == 0 else 1) for i, f in enumerate(rows)}
+                yield B_page('B2'), b2
+                kept = [B3_FIELDS[B2_FIELDS.index(f)]
+                        for i, f in enumerate(rows) if i % 2 == 1]
+                expect(b3_rows(self.player), kept)
+                b3 = {f: 1 for f in kept}
+            elif knows:
+                yield B_page('B1'), {f: 1 for f in B1_FIELDS}
                 # B2: 1-5번 "없음", 6-10번 "규정에 명시"
                 b2 = {f: (C.B2_NONE if i < 5 else 1) for i, f in enumerate(B2_FIELDS)}
                 yield B_page('B2'), b2
                 expect(b3_rows(self.player), B3_FIELDS[5:])
                 b3 = {f: 1 for f in B3_FIELDS[5:]}
             else:
+                yield B_page('B1'), {f: C.B1_DONT_KNOW for f in B1_FIELDS}
                 expect(b2_rows(self.player), [])
                 b3 = {}
             b3.update({f: 3 for f in B15_FIELDS})
@@ -89,23 +105,23 @@ class PlayerBot(Bot):
             yield B_page('B4'), dict(b4=4, b5=2, b6=3)
             expect(self.player.field_maybe_none('b5'), None)
 
-            b7_value = 2 if case == 'full' else C.B7_DONT_KNOW
+            b7_value = 2 if knows else C.B7_DONT_KNOW
             b7 = {f: b7_value for f in B7_FIELDS}
             yield SubmissionMustFail(B_page('B7'), dict(b7, b8_rank1=1, b8_rank2=1))
             yield B_page('B7'), dict(b7, b8_rank1=1, b8_rank2=8, b8_other='세미나')
-            if case == 'full':
+            if knows:
                 expect(self.player.b8_rank2, 8)
                 expect(self.player.b8_other, '세미나')
             else:
                 expect(self.player.field_maybe_none('b8_rank1'), None)
 
             b9 = {f: 4 for f in B9_FIELDS}
-            b9['b9_attn'] = C.ATTN_CORRECT if case == 'full' else 5
+            b9['b9_attn'] = C.ATTN_CORRECT if knows else 5
             too_many = {f: True for f in B10_FIELDS[:4]}
             yield SubmissionMustFail(B_page('B9'), dict(b9, **too_many))
             yield SubmissionMustFail(B_page('B9'), dict(b9, b10_14=True))  # "기타"만 고르고 내용 비움
             yield B_page('B9'), dict(b9, b10_1=True, b10_14=True, b10_other='기타사유')
-            expect(self.player.attn_fail_pre, case != 'full')
+            expect(self.player.attn_fail_pre, not knows)
 
             yield B_page('B11'), dict(b11_1=1, b11_2=2, b11_3=3, b11_4=15, b11_4_1=2, b11_5=2, b11_6=1)
             yield SubmissionMustFail(B_page('B12'), dict(b12=150))

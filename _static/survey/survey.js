@@ -31,6 +31,8 @@ var ERROR_BANNER = '아직 완료되지 않은 문항이 있습니다. 아래 �
 var OTREE_DEFAULT_BANNER = '입력 양식의 내용이 잘못되었습니다. 바로잡아주세요.';
 /* 응답하지 않은 문항이 있을 때 (N 자리에 개수가 들어간다) */
 var UNANSWERED_BANNER = '아직 응답하지 않은 문항이 N개 있습니다. 아래 표시된 문항에 응답해 주셔야 다음으로 넘어갈 수 있습니다.';
+/* 숫자가 허용 범위를 벗어났을 때 */
+var RANGE_BANNER = '입력하신 숫자가 범위를 벗어났습니다. 아래 표시된 문항을 다시 확인해 주세요.';
 
 (function () {
     'use strict';
@@ -42,6 +44,10 @@ var UNANSWERED_BANNER = '아직 응답하지 않은 문항이 N개 있습니다.
 
     var form = document.getElementById('form');
     if (!form) return;
+
+    // 브라우저가 제 방식대로 막으면 (iOS 사파리는 아무 말 없이 멈춘다) 응답자가
+    // 무엇이 잘못됐는지 알 수 없다. 검사는 아래에서 우리가 직접 한다.
+    form.setAttribute('novalidate', '');
 
     function isVisible(el) {
         return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
@@ -280,6 +286,45 @@ var UNANSWERED_BANNER = '아직 응답하지 않은 문항이 N개 있습니다.
         return filled.length === texts.length;
     }
 
+    /* ---------- 숫자 범위 확인 ---------- */
+    function rangeErrors() {
+        var bad = [];
+        form.querySelectorAll('input[type=number]').forEach(function (el) {
+            if (!isVisible(el) || el.value.trim() === '') return;
+            var v = Number(el.value);
+            var min = el.getAttribute('min');
+            var max = el.getAttribute('max');
+            var low = min !== null && v < Number(min);
+            var high = max !== null && v > Number(max);
+            if (isNaN(v) || low || high) {
+                var note;
+                if (min !== null && max !== null) {
+                    note = min + ' ~ ' + max + ' 사이의 숫자를 적어 주십시오.';
+                } else if (max !== null) {
+                    note = max + ' 이하의 숫자를 적어 주십시오.';
+                } else if (min !== null) {
+                    note = min + ' 이상의 숫자를 적어 주십시오.';
+                } else {
+                    note = '숫자를 다시 확인해 주십시오.';
+                }
+                bad.push({input: el, note: note});
+            }
+        });
+        return bad;
+    }
+
+    function showRangeNote(item) {
+        var unit = item.input.closest('[data-q]') || item.input.parentNode;
+        var box = unit.querySelector('.range-note');
+        if (!box) {
+            box = document.createElement('div');
+            box.className = 'form-control-errors range-note';
+            unit.appendChild(box);
+        }
+        box.textContent = item.note;
+        unit.classList.add('unanswered');
+    }
+
     /* ---------- 화면 맨 위 안내 띠 ---------- */
     function showBanner(text) {
         var box = document.querySelector('.otree-form-errors');
@@ -340,13 +385,23 @@ var UNANSWERED_BANNER = '아직 응답하지 않은 문항이 N개 있습니다.
         form.querySelectorAll('.unanswered').forEach(function (el) {
             el.classList.remove('unanswered');
         });
+        form.querySelectorAll('.range-note').forEach(function (el) { el.remove(); });
 
         var missing = [];
         form.querySelectorAll('[data-q]').forEach(function (unit) {
             if (!isVisible(unit) || unit.closest('[data-q-optional]')) return;
             if (!isAnswered(unit)) missing.push(unit);
         });
-        if (missing.length === 0) return;
+        if (missing.length === 0) {
+            var bad = rangeErrors();
+            if (bad.length === 0) return;
+            bad.forEach(showRangeNote);
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            showBanner(RANGE_BANNER);
+            bad[0].input.scrollIntoView({behavior: 'smooth', block: 'center'});
+            return;
+        }
 
         missing.forEach(function (u) { u.classList.add('unanswered'); });
         e.preventDefault();
