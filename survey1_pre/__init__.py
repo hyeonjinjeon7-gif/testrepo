@@ -76,7 +76,10 @@ class C(BaseConstants):
     B2_NONE = 3  # B2 "없음"
     B7_DONT_KNOW = 4  # B7 "모른다"
     ATTN_CORRECT = 3  # B9 attention check 정답 "영향 없음"
-    CEO = 1  # A1 "대표이사/CEO" (이 경우 A1-1 담당 업무는 묻지 않는다)
+    # A1 에서 이 보기를 고르면 A1-1(담당 업무)을 묻지 않는다.
+    # 대표이사/CEO 는 담당 업무를 나눌 일이 없고, "기타"는 직위를 주관식으로 적게 하기 때문이다.
+    CEO = 1
+    POSITION_OTHER = 5
 
     B8_CHANNELS = [
         [1, '정부기관 홈페이지 (고용24 등)'],
@@ -580,7 +583,7 @@ class A1(SurveyPage):
 
     @staticmethod
     def error_message(player: Player, values):
-        if values.get('a1') == C.CEO:  # 대표이사/CEO 에게는 보이지 않는 문항
+        if values.get('a1') in (C.CEO, C.POSITION_OTHER):  # A1-1 이 보이지 않는 응답자
             return
         errors = other_text_errors(values, [('a1_1_7', 'a1_1_other')])
         checked = count_checked(values, A1_1_FIELDS)
@@ -592,10 +595,10 @@ class A1(SurveyPage):
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
-        clear_other(player, 'a1', 'a1_other', 5)
+        clear_other(player, 'a1', 'a1_other', C.POSITION_OTHER)
         clear_other(player, 'a2', 'a2_other', 9)
-        # 대표이사/CEO 는 담당 업무를 묻지 않는다
-        if player.field_maybe_none('a1') == C.CEO:
+        # 대표이사/CEO 와 "기타"(주관식) 에게는 담당 업무를 묻지 않는다
+        if player.field_maybe_none('a1') in (C.CEO, C.POSITION_OTHER):
             clear_checkboxes(player, A1_1_FIELDS)
         if not player.a1_1_7:
             player.a1_1_other = None

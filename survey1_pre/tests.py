@@ -32,7 +32,7 @@ class PlayerBot(Bot):
 
         if case == 'full':
             # 대표가 아닌 응답자 -> A1-1(담당 업무)에 응답 (복수 선택, 최대 2개)
-            base = dict(a1=5, a1_other='팀장', a2=1, a2_other='지워져야 함',
+            base = dict(a1=4, a1_other='지워져야 함', a2=1, a2_other='지워져야 함',
                         a3=2001, a4_regular=30, a4_nonregular=5)
             yield SubmissionMustFail(A1, base)  # 담당 업무를 고르지 않음
             yield SubmissionMustFail(
@@ -45,6 +45,7 @@ class PlayerBot(Bot):
             expect(self.player.a1_1_1, True)
             expect(self.player.a1_1_2, False)
             expect(self.player.a1_1_other, '기획')
+            expect(self.player.field_maybe_none('a1_other'), None)
         else:
             # 대표이사/CEO -> A1-1은 묻지 않으므로 값이 남지 않는다
             yield A1, dict(a1=C.CEO, a1_1_3=True, a1_other='지워져야 함',
