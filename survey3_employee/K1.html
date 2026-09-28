@@ -16,12 +16,13 @@
             <div class="inline-num">{{ form.k4_1 }} <span>명</span></div>
             {{ formfield_errors 'k4_1' }}
         </div>
-        <div class="sub-input">
+        {{ comment }}자녀 수(K4-1)에 적은 만큼만 나이 칸을 보여 준다{{ endcomment }}
+        <div class="sub-input" data-show-if-min="k4_1:1">
             <span>K4-2. 자녀의 나이를 각각 적어 주십시오. (만 나이, 1세 미만은 0)</span>
-            {{ formfield 'k4_2_1' }}
-            {{ formfield 'k4_2_2' }}
-            {{ formfield 'k4_2_3' }}
-            {{ formfield 'k4_2_4' }}
+            <div data-show-if-min="k4_1:1">{{ formfield 'k4_2_1' }}</div>
+            <div data-show-if-min="k4_1:2">{{ formfield 'k4_2_2' }}</div>
+            <div data-show-if-min="k4_1:3">{{ formfield 'k4_2_3' }}</div>
+            <div data-show-if-min="k4_1:4">{{ formfield 'k4_2_4' }}</div>
         </div>
     </div>
 </div>

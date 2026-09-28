@@ -12,6 +12,7 @@
  *                              | 로 여러 문항: "b8_rank1|b8_rank2=8",
  *                              ; 로 조건 여러 개 중 하나라도 맞으면: "h1=1,2;h1_1=1")
  *   data-show-if-blank="v1"    v1 을 비워 두었을 때만 표시
+ *   data-show-if-min="k4_1:2"  k4_1 에 적은 숫자가 2 이상일 때만 표시 (자녀 수만큼 나이 칸 표시)
  *   data-show-if-any="b7_:1,2,3"
  *                              이름이 b7_ 로 시작하는 라디오 중 하나라도 1,2,3이면 표시
  *   data-max-check="3"         (체크박스 묶음) 최대 선택 개수
@@ -89,6 +90,13 @@ var UNANSWERED_BANNER = '아직 응답하지 않은 문항이 N개 있습니다.
                 return currentValues(name).length === 0;
             });
             toggle(el, blank);
+        });
+        form.querySelectorAll('[data-show-if-min]').forEach(function (el) {
+            var spec = el.getAttribute('data-show-if-min').split(':');
+            var input = form.querySelector('[name="' + spec[0] + '"]');
+            var need = parseInt(spec[1], 10);
+            var val = input ? parseInt(input.value, 10) : NaN;
+            toggle(el, !isNaN(val) && val >= need);
         });
         form.querySelectorAll('[data-show-if-any]').forEach(function (el) {
             var spec = el.getAttribute('data-show-if-any').split(':');

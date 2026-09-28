@@ -35,7 +35,7 @@ class PlayerBot(Bot):
         if parent:
             yield SubmissionMustFail(
                 K1, dict(k1=2, k2=2, k3=2, k4=2, k4_1=1, k4_2_1=3, k4_2_2=5, k5=2)
-            )  # 자녀 1명인데 나이 2개
+            )  # 자녀 1명인데 나이 2개 (화면에서는 나이 칸이 1개만 보인다)
             yield K1, dict(k1=2, k2=2, k3=2, k4=2, k4_1=2, k4_2_1=3, k4_2_2=5, k5=1)
             expect(self.player.k5, 1)
         else:
