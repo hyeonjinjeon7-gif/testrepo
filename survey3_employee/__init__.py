@@ -304,6 +304,15 @@ class Player(BasePlayer):
     )
     o3 = radio('O3. 6개월, 12개월 후 후속 설문 안내를 받으시겠습니까?', YES_NO)
 
+    # 진행 막대용 (템플릿에서 player.progress_step / player.progress_total 로 읽는다)
+    @property
+    def progress_step(self):
+        return page_progress(self, page_sequence)[0]
+
+    @property
+    def progress_total(self):
+        return page_progress(self, page_sequence)[1]
+
 
 # ---------------------------------------------------------------------------
 # 필드 묶음
@@ -585,7 +594,10 @@ class O(SurveyPage):
 
     @staticmethod
     def is_displayed(player: Player):
-        return privacy_ok(player)
+        # 아직 동의 화면을 지나지 않았으면(값이 비어 있으면) 보여 줄 화면으로 센다.
+        # 진행 막대가 동의 전후로 전체 화면 수를 다르게 세지 않게 하려는 것이고,
+        # 실제로 이 화면 차례가 올 때는 동의 여부가 이미 정해져 있다.
+        return player.field_maybe_none('consent_privacy') != 0
 
     @staticmethod
     def get_form_fields(player: Player):

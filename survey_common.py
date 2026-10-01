@@ -180,6 +180,30 @@ def make_positioned(app_name, page_class, position, field='block_order'):
 # ---------------------------------------------------------------------------
 # 입력 검사, 정리
 # ---------------------------------------------------------------------------
+def page_progress(player, page_sequence):
+    """이 응답자가 볼 화면 중 지금이 몇 번째인지 (현재, 전체).
+
+    건너뛰는 화면(조건부 문항, 블록 순서에 따라 안 보이는 자리)은 빼고 센다.
+    어떤 이유로든 셈이 어긋나면 (0, 0) 을 돌려주어 진행 막대를 숨긴다.
+    """
+    try:
+        here = player.participant._index_in_pages
+        shown = []
+        for number, page in enumerate(page_sequence, start=1):
+            check = getattr(page, 'is_displayed', None)
+            if check is None or check(player):
+                shown.append(number)
+        if not shown:
+            return 0, 0
+        if here in shown:
+            step = shown.index(here) + 1
+        else:                      # 건너뛴 자리에 서 있는 경우 (있을 수 없지만 대비)
+            step = sum(1 for number in shown if number <= here)
+        return step, len(shown)
+    except Exception:
+        return 0, 0
+
+
 def is_valid_phone(s):
     digits = s.replace('-', '').replace(' ', '')
     return digits.isdigit() and 10 <= len(digits) <= 11 and digits.startswith('01')

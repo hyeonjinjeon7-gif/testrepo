@@ -6,9 +6,10 @@ title / content 블록만 채우면 된다.
 {{ endcomment }}
 
 {{ block global_styles }}
-<link rel="stylesheet" href="{{ static 'survey/survey.css' }}?v=31">
+<link rel="stylesheet" href="{{ static 'survey/survey.css' }}?v=32">
 {{ endblock }}
 
 {{ block global_scripts }}
-<script src="{{ static 'survey/survey.js' }}?v=31"></script>
+<script>var SURVEY_PROGRESS = {step: {{ player.progress_step }}, total: {{ player.progress_total }}};</script>
+<script src="{{ static 'survey/survey.js' }}?v=32"></script>
 {{ endblock }}

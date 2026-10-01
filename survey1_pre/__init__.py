@@ -2,7 +2,7 @@ import random
 
 from otree.api import *
 
-from survey_common import clear_checkboxes, other_text_errors
+from survey_common import clear_checkboxes, other_text_errors, page_progress
 
 
 doc = """
@@ -434,6 +434,15 @@ class Player(BasePlayer):
     c8_11 = check('이미 충분히 정비되어 있음')
     c8_12 = check('기타')
     c8_other = text('기타 (직접 입력)')
+
+    # 진행 막대용 (템플릿에서 player.progress_step / player.progress_total 로 읽는다)
+    @property
+    def progress_step(self):
+        return page_progress(self, page_sequence)[0]
+
+    @property
+    def progress_total(self):
+        return page_progress(self, page_sequence)[1]
 
 
 # ---------------------------------------------------------------------------

@@ -34,6 +34,33 @@ var UNANSWERED_BANNER = '아직 응답하지 않은 문항이 N개 있습니다.
 /* 숫자가 허용 범위를 벗어났을 때 */
 var RANGE_BANNER = '입력하신 숫자가 범위를 벗어났습니다. 아래 표시된 문항을 다시 확인해 주세요.';
 
+/* ---------- 진행 막대 ----------
+   SURVEY_PROGRESS = {step: 지금 몇 번째 화면, total: 이 응답자가 볼 전체 화면 수} */
+(function () {
+    var p = window.SURVEY_PROGRESS;
+    if (!p || !p.total) return;
+    var percent = Math.round(p.step / p.total * 100);
+    var body = document.querySelector('.otree-body');
+    if (!body) return;
+
+    var wrap = document.createElement('div');
+    wrap.className = 'progress-wrap';
+    var track = document.createElement('div');
+    track.className = 'progress-track';
+    var fill = document.createElement('div');
+    fill.className = 'progress-fill';
+    fill.style.width = percent + '%';
+    track.appendChild(fill);
+    var text = document.createElement('div');
+    text.className = 'progress-text';
+    text.textContent = p.step + ' / ' + p.total + ' 화면  ·  ' + percent + '%';
+    wrap.appendChild(track);
+    wrap.appendChild(text);
+
+    var title = document.getElementById('_otree-title');
+    body.insertBefore(wrap, title || body.firstChild);
+})();
+
 (function () {
     'use strict';
 

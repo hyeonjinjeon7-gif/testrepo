@@ -257,6 +257,15 @@ class Player(BasePlayer):
     w5_1 = number('W5-1. 자녀는 모두 몇 명입니까? (명)', max=20)
     w6 = radio('W6. 현재 거주하시는 주택의 형태', HOUSING)
 
+    # 진행 막대용 (템플릿에서 player.progress_step / player.progress_total 로 읽는다)
+    @property
+    def progress_step(self):
+        return page_progress(self, page_sequence)[0]
+
+    @property
+    def progress_total(self):
+        return page_progress(self, page_sequence)[1]
+
 
 # ---------------------------------------------------------------------------
 # 필드 묶음
