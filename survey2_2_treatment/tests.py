@@ -24,7 +24,8 @@ class PlayerBot(Bot):
         yield SubmissionMustFail(A0, dict(a0='테스트회사'))  # 연락처를 둘 다 비움
         yield A0, dict(a0='테스트회사', a0_1_phone='010-1234-5678', a0_1_email='a@b.com')
 
-        yield D, dict(d0=1, d1=4, d2=4, d3=5, d4='유연근무 지원금', d5=2, d5_text='지워져야 함')
+        yield SubmissionMustFail(D, dict(d0=1, d1=4))  # 명찰 색·강연자 성별을 고르지 않음
+        yield D, dict(d_badge=1, d_speaker=1, d0=1, d1=4, d2=4, d3=5, d4='유연근무 지원금', d5=2, d5_text='지워져야 함')
         expect(self.player.field_maybe_none('d5_text'), None)
 
         yield SubmissionMustFail(E12, dict(e1=120, e2=50))

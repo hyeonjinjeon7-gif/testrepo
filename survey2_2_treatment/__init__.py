@@ -102,6 +102,9 @@ class Player(BasePlayer):
     a0_1_email = text('이메일')
 
     # ----------------------------------------------------------------- D. 강연 평가
+    # 강연장 확인 문항 (D0 앞에 둔다)
+    d_badge = radio('본인의 명찰 색은 무엇입니까?', [[1, '파랑'], [2, '초록']])
+    d_speaker = radio('오늘 강연자의 성별은 무엇입니까?', [[1, '남성'], [2, '여성']])
     d0 = radio(
         'D0. 오늘 강연에 처음부터 참석하셨습니까?',
         [[1, '처음부터 참석'], [2, '10분 이내 늦게 입장'], [3, '10-30분 늦게 입장'], [4, '30분 이상 늦게 입장']],
@@ -326,7 +329,15 @@ class A0(SurveyPage):
 
 class D(SurveyPage):
     form_model = 'player'
-    form_fields = ['d0', 'd1', 'd2', 'd3', 'd4', 'd5', 'd5_text']
+    form_fields = ['d_badge', 'd_speaker', 'd0', 'd1', 'd2', 'd3', 'd4', 'd5', 'd5_text']
+
+    @staticmethod
+    def error_message(player: Player, values):
+        errors = {}
+        for f in ['d_badge', 'd_speaker']:
+            if values.get(f) is None:
+                errors[f] = '하나를 선택해 주십시오.'
+        return errors
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
